@@ -1,4 +1,3 @@
-#include <stdio.h>
 /* IFtoEx Register */
 /*
 (1) ALUop1
@@ -16,89 +15,134 @@
 (13) Dest1 --> 5
 (14) Dest2 --> 5
 */
-bool RegDst;
-bool ALUop1;
-bool ALUop2;
-bool ALUSrc;
-bool Branch;
-bool MemRead;
-bool MemWrite;
-bool RegWrite;
-bool MemToReg;
+static bool RegDst;
+static bool ALUop1;
+static bool ALUop2;
+static bool ALUSrc;
+static bool Branch;
+static bool MemRead;
+static bool MemWrite;
+static bool RegWrite;
+static bool MemToReg;
 
-uint32_t PC;
-uint32_t ReadData1;
-uint32_t ReadData2;
-uint32_t ImmediateValue;
-
-/* gonna have to check to make sure its actually 5 bits */
-uint8_t Dest1;
-uint8_t Dest2;
-
-bool tempRegDst;
-bool tempALUop1;
-bool tempALUop2;
-bool tempALUSrc;
-bool tempBranch;
-bool tempMemRead;
-bool tempMemWrite;
-bool tempRegWrite;
-bool tempMemToReg;
-
-uint32_t tempPC;
-uint32_t tempReadData1;
-uint32_t tempReadData2;
-uint32_t tempImmediateValue;
+static uint32_t PC;
+static uint32_t ReadData1;
+static uint32_t ReadData2;
+static uint32_t ImmediateValue;
 
 /* gonna have to check to make sure its actually 5 bits */
-uint8_t tempDest1;
-uint8_t tempDest2;
+static uint8_t Dest1;
+static uint8_t Dest2;
+
+static bool tempRegDst;
+static bool tempALUop1;
+static bool tempALUop2;
+static bool tempALUSrc;
+static bool tempBranch;
+static bool tempMemRead;
+static bool tempMemWrite;
+static bool tempRegWrite;
+static bool tempMemToReg;
+
+static uint32_t tempPC;
+static uint32_t tempReadData1;
+static uint32_t tempReadData2;
+static uint32_t tempImmediateValue;
+
+/* gonna have to check to make sure its actually 5 bits */
+static uint8_t tempDest1;
+static uint8_t tempDest2;
 
 void setRegDst(bool RegDestVal){
-        tempRegDst = RegDestVal;
+    tempRegDst = RegDestVal;
+}
+void setALUop1(bool ALUTop1Val){
+    tempALUop1 = ALUop1Val;
+}
+void setALUop2(bool ALUTop2Val){
+    tempALUop2 = ALUop2Val;
+}
+void setALUSrc(bool ALUSrcVal){
+    tempALUSrc = ALUSrcVal;
+}
+void setBranch(bool BranchVal){
+    tempBranch = BranchVal;
+}
+void setMemRead(bool MemReadVal){
+    tempMemRead = MemReadVal;
+}
+void setMemWrite(bool MemWriteVal){
+    tempMemWrite = MemWriteVal;
+}
+void setRegWrite(bool RegWriteVal){
+    tempRegWrite = RegWriteVal;
+}
+void setMemToReg(bool MemToRegVal){
+    tempMemToReg = MemToRegVal;
+}
+void setPC(uint32_t PCVal){
+    tempPC = PCVal;
+}
+void setReadData1(uint32_t ReadData1Val){
+    tempReadData1 = ReadData1Val;
+}
+void setReadData2(uint32_t ReadData2Val){
+    tempReadData2 = ReadData2Val;
+}
+void setImmediateValue(uint32_t ImmediateValueVal){
+    tempImmediateValue = ImmediateValueVal;
+}
+void setDest1(uint8_t Dest1Val){
+    tempDest1 = Dest1Val;
+}
+void setDest2(uint8_t Dest2Val){
+    tempDest2 = Dest2Val;
 }
 
-void setALUop1(bool ALUTop1Val, int real){
-    if(real){
-        ALUop1 = ALUop1Val;
-    }
-    else{
-        tempALUop1 = ALUop1Val;
-    }
+bool getRegDst(void){
+    return RegDest;
 }
-
-void setALUop2(bool ALUTop2Val, int real){
-    if(real){
-        ALUop2 = ALUop2Val;
-    }
-    else{
-        tempALUop2 = ALUop2Val;
-    }
+bool getALUop1(void){
+    return ALUop1;
 }
-
-void setALUSrc(bool ALUSrcVal, int real){
-    if(real){
-        ALUSrc = ALUSrcVal;
-    }
-    else{
-        tempALUSrc = ALUSrcVal;
-    }
+bool getALUop2(void){
+    return ALUop2;
 }
-
-void setBranch(bool BranchVal, int real){
-    if(real){
-        Branch = BranchVal;
-    }
-    else{
-        tempBranch = BranchVal;
-    }
+bool getALUSrc(void){
+    return ALUSrc;
 }
+bool getBranch(void){
+    return Branch;
+}
+bool getMemRead(void){
+    return MemRead;
+}
+bool getMemWrite(void){
+    return MemWrite;
+}
+bool getRegWrite(void){
+    return RegWrite;
+}
+bool getMemToReg(void){
+    return MemToReg;
+}
+uint32_t getPC(void){
+    return PC;
+}
+uint32_t getReadData1(void){
+    return ReadData1;
 
-void setMemRead(bool MemReadVal, int real){
-    if(real){
-        MemRead = MemReadVal;
-    }
-    else{
-        tempMemRead = MemReadVal;
-    }
+
+}
+uint32_t getReadData2(void){
+    return ReadData2;
+}
+uint32_t getImmediateValue(void){
+    return ImmediateValue;
+}
+uint8_t getDest1(void){
+    return Dest1;
+}
+uint8_t getDest2(void){
+    return Dest2;
 }
