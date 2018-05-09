@@ -1,40 +1,40 @@
-#include <stdio.h>
+#include "IFtoIDRegister.h"
 
 /* IFtoID Register */
 /*
     (1) PC --> 32
     (2) Instruction --> 32
 */
-uint32_t PC;
-uint32_t Instruction;
+static uint32_t PC;
+static uint32_t Instruction;
 
-uint32_t tempPC;
-uint32_t tempInstruction;
+static uint32_t tempPC;
+static uint32_t tempInstruction;
 
-void uint32_t setPC(uint32_t PCVal, int real){
-    if(real){
-        uint32_t PC = PCval;
-    }
-    else{
-        uint32_t tempPC = PCval;
-    }
+void setPC(uint32_t PCVal)
+{
+    tempPC = PCVal;
 }
 
-void uint32_t setInstruction(uint32_t InstructionVal, int real){
-    if(real){
-        uint32_t Instruction = InstructionVal;
-    }
-    else{
-        uint32_t tempInstruction = InstructionVal;
-    }
+uint32_t getPC(void)
+{
+    return PC;
 }
 
-void updateRealValues(){
+void setInstruction(uint32_t InstructionVal)
+{
+    tempInstruction = InstructionVal;
+}
+
+uint32_t getInstruction(void)
+{
+    return Instruction;
+}
+
+void commitValues(void)
+{
     PC = tempPC;
     Instruction = tempInstruction;
-
-    tempPC = 0;
-    Instruction = 0;
 }
 
 
