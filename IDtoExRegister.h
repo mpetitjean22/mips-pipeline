@@ -1,7 +1,9 @@
 #include <cstdint>
 /* stores the values of the ID/EX register */
 
+/* ------------------------------------------------------------------ */
 /* setter functions */
+
 void setRegDst(bool RegDestVal);
 void setALUop1(bool ALUTop1Val);
 void setALUop2(bool ALUTop2Val);
@@ -17,6 +19,7 @@ void setReadData2(uint32_t ReadData2Val);
 void setImmediateValue(uint32_t ImmediateValueVal);
 void setDest1(uint8_t Dest1Val);
 void setDest2(uint8_t Dest2Val);
+/* ------------------------------------------------------------------ */
 
 /* getter functions */
 bool getRegDst(void);
@@ -34,3 +37,5 @@ uint32_t getReadData2(void);
 uint32_t getImmediateValue(void);
 uint8_t getDest1(void);
 uint8_t getDest2(void);
+
+/* ------------------------------------------------------------------ */

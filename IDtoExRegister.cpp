@@ -15,6 +15,9 @@
 (13) Dest1 --> 5
 (14) Dest2 --> 5
 */
+
+/* ------------------------------------------------------------------ */
+
 static bool RegDst;
 static bool ALUop1;
 static bool ALUop2;
@@ -34,6 +37,8 @@ static uint32_t ImmediateValue;
 static uint8_t Dest1;
 static uint8_t Dest2;
 
+/* ------------------------------------------------------------------ */
+
 static bool tempRegDst;
 static bool tempALUop1;
 static bool tempALUop2;
@@ -52,6 +57,8 @@ static uint32_t tempImmediateValue;
 /* gonna have to check to make sure its actually 5 bits */
 static uint8_t tempDest1;
 static uint8_t tempDest2;
+
+/* ------------------------------------------------------------------ */
 
 void setRegDst(bool RegDestVal){
     tempRegDst = RegDestVal;
@@ -98,6 +105,8 @@ void setDest1(uint8_t Dest1Val){
 void setDest2(uint8_t Dest2Val){
     tempDest2 = Dest2Val;
 }
+
+/* ------------------------------------------------------------------ */
 
 bool getRegDst(void){
     return RegDest;
