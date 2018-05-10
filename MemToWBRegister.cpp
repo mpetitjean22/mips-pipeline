@@ -1,3 +1,4 @@
+#include "MemToWBRegister.h"
 /* MemToWB */
 /*
     (1) MemToReg
@@ -53,14 +54,24 @@ bool getRegWrite(void){
 bool getMemToReg(void){
     return MemToReg;
 }
-uint32_t getALUResult(void){
-    return ALUResult;
+uint32_t getMemoryOutput(void){
+    return MemoryOutput;
 }
 uint32_t getALUResult(void){
     return ALUResult;
 }
 uint8_t getDestination(void){
     return Destination;
+}
+
+/* ------------------------------------------------------------------ */
+
+void commitValues(void){
+    RegWrite = tempRegWrite;
+    MemToReg = tempMemToReg;
+    ALUResult = tempALUResult;
+    MemoryOutput = tempMemoryOutput;
+    Destination = tempDestination;
 }
 
 /* ------------------------------------------------------------------ */

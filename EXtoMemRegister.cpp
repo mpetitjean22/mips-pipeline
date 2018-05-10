@@ -1,3 +1,4 @@
+#include "EXtoMemRegister.h"
 /* ExToMem */
 /*
     (1) RegWrite
@@ -106,6 +107,21 @@ uint32_t getReadData2(void){
 }
 uint8_t getDestination(void){
     return Destination;
+}
+
+/* ------------------------------------------------------------------ */
+
+void commitValues(void){
+    RegWrite = tempRegWrite;
+    MemRead = tempMemRead;
+    MemWrite = tempMemWrite;
+    MemToReg = tempMemToReg;
+    Branch = tempBranch;
+    Zero = tempZero;
+    ALUResult = tempALUResult;
+    BranchAddress = tempBranchAddress;
+    ReadData2 = tempReadData2;
+    Destination = tempDestination;
 }
 
 /* ------------------------------------------------------------------ */

@@ -20,7 +20,7 @@ void setDestination(uint8_t DesintationVal);
 
 bool getRegWrite(void);
 bool getMemRead(void);
-bool getMemWrite(void); 
+bool getMemWrite(void);
 bool getMemToReg(void);
 bool getBranch(void);
 bool getZero(void);
@@ -28,5 +28,9 @@ uint32_t getALUResult(void);
 uint32_t getBranchAdress(void);
 uint32_t getReadData2(void);
 uint8_t getDestination(void);
+
+/* ------------------------------------------------------------------ */
+
+void commitValues(void);
 
 /* ------------------------------------------------------------------ */

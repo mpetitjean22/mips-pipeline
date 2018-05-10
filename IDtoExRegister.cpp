@@ -1,3 +1,4 @@
+#include "IDtoExRegister.h"
 /* IFtoEx Register */
 /*
 (1) ALUop1
@@ -140,8 +141,6 @@ uint32_t getPC(void){
 }
 uint32_t getReadData1(void){
     return ReadData1;
-
-
 }
 uint32_t getReadData2(void){
     return ReadData2;
@@ -155,3 +154,24 @@ uint8_t getDest1(void){
 uint8_t getDest2(void){
     return Dest2;
 }
+
+/* ------------------------------------------------------------------ */
+
+void commitValues(void){
+    RegDst = tempRegDst;
+    ALUop1 = tempALUop1;
+    ALUop2 = tempALUop2;
+    ALUSrc = tempALUSrc;
+    Branch = tempBranch;
+    MemRead = tempMemRead;
+    MemWrite = tempMemWrite;
+    MemToReg = tempMemToReg;
+    PC = tempPC;
+    ReadData1 = tempReadData1;
+    ReadData2 = tempReadData2;
+    ImmediateValue = tempImmediateValue;
+    Dest1 = tempDest1;
+    Dest2 = tempDest2;
+}
+
+/* ------------------------------------------------------------------ */

@@ -15,8 +15,13 @@ void setDestination(uint8_t DesintationVal);
 
 bool getRegWrite(void);
 bool getMemToReg(void);
-uint32_t getALUResult(void);
+uint32_t getMemoryOutput(void);
 uint32_t getALUResult(void);
 uint8_t getDestination(void);
 
 /* ------------------------------------------------------------------ */
+/* commits the old version of the register to the new version */
+
+ void commitValues(void);
+
+ /* ------------------------------------------------------------------ */
