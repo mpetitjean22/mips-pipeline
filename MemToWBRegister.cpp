@@ -7,7 +7,9 @@
     (4) Destination --> 5
     (5) ALUResult --> 32
 */
-
+MemToWBRegister::MemToWBRegister(){
+    
+}
 void MemToWBRegister::SetRegWrite(bool RegWriteVal)
 {
     tempRegWrite = RegWriteVal;

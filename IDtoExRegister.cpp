@@ -16,7 +16,9 @@
 (13) Dest1 --> 5
 (14) Dest2 --> 5
 */
-
+IDtoExRegister::IDtoExRegister(){
+    
+}
 void IDtoExRegister::SetRegDst(bool RegDestVal)
 {
     tempRegDst = RegDestVal;

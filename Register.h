@@ -1,7 +1,7 @@
 #ifndef REGISTER_H
 #define REGISTER_H
 
-#include <cstdint>
+#include <inttypes.h>
 
 class Register {
 public:

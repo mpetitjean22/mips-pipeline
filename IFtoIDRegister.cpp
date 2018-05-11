@@ -5,6 +5,9 @@
     (1) PC --> 32
     (2) Instruction --> 32
 */
+IFtoIDRegister::IFtoIDRegister(){
+
+}
 
 void IFtoIDRegister::SetPC(uint32_t PCVal)
 {

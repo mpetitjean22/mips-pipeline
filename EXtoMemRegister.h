@@ -16,6 +16,7 @@ public:
     void SetBranchAddress(uint32_t BranchAddressVal);
     void SetReadData2(uint32_t ReadData2Val);
     void SetDestination(uint8_t DesintationVal);
+
     bool GetRegWrite() const;
     bool GetMemRead() const;
     bool GetMemWrite() const;

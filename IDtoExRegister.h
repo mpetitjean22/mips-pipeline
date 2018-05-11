@@ -15,12 +15,15 @@ public:
     void SetMemWrite(bool MemWriteVal);
     void SetRegWrite(bool RegWriteVal);
     void SetMemToReg(bool MemToRegVal);
+
     void SetPC(uint32_t PCVal);
     void SetReadData1(uint32_t ReadData1Val);
     void SetReadData2(uint32_t ReadData2Val);
     void SetImmediateValue(uint32_t ImmediateValueVal);
     void SetDest1(uint8_t Dest1Val);
     void SetDest2(uint8_t Dest2Val);
+    void SetRS(uint8_t RSVal);
+
     bool GetRegDst() const;
     bool GetALUop1() const;
     bool GetALUop2() const;
@@ -36,6 +39,8 @@ public:
     uint32_t GetImmediateValue() const;
     uint8_t GetDest1() const;
     uint8_t GetDest2() const;
+    uint8_t GetRS() const;
+
     void CommitValues();
 
 private:

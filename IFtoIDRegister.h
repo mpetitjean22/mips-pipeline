@@ -2,6 +2,7 @@
 #define IFtoIDREGISTER_H
 
 #include "Register.h"
+#include <inttypes.h>
 
 class IFtoIDRegister : public Register {
 public:

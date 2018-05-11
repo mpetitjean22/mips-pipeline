@@ -12,7 +12,9 @@
     (9) ReadData2 --> 32
     (10) Destination --> 5
 */
-
+EXtoMemRegister::EXtoMemRegister(){
+    
+}
 void EXtoMemRegister::SetRegWrite(bool RegWriteVal)
 {
     tempRegWrite = RegWriteVal;
