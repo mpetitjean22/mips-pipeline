@@ -3,24 +3,6 @@
 
 #include "Register.h"
 
-
-/* ------------------------------------------------------------------ */
-
-void setPC(uint32_t PCVal);
-void setInstruction(uint32_t InstructionVal);
-
-/* ------------------------------------------------------------------ */
-
-uint32_t getPC(void);
-uint32_t getInstruction(void);
-
-/* ------------------------------------------------------------------ */
-
-void commitValues(void);
-
-/* ------------------------------------------------------------------ */
-
-
 class IFtoIDRegister : public Register {
 public:
     IFtoIDRegister();
