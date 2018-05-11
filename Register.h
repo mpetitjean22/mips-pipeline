@@ -5,7 +5,7 @@
 
 class Register {
 public:
-    virtual void CommitValues(void) = 0;
+    virtual void CommitValues() = 0;
 };
 
 #endif

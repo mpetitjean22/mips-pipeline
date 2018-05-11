@@ -1,36 +1,54 @@
-#include <cstdint>
-/* stores the values of the EX/MEM Register */
+#ifndef EXtoMemREGISTER_H
+#define EXtoMemREGISTER_H
 
-/* ------------------------------------------------------------------ */
-/* setter functions */
+#include "Register.h"
 
-void setRegWrite(bool RegWriteVal);
-void setMemRead(bool MemReadVal);
-void setMemWrite(bool MemWriteVal);
-void setMemToReg(bool MemToRegVal);
-void setBranch(bool BranchVal);
-void setZero(bool ZeroVal);
-void setALUResult(uint32_t ALUResultVal);
-void setBranchAddress(uint32_t BranchAddressVal);
-void setReadData2(uint32_t ReadData2Val);
-void setDestination(uint8_t DesintationVal);
+class EXtoMemRegister : public Register {
+public:
+    EXtoMemRegister();
+    void SetRegWrite(bool RegWriteVal);
+    void SetMemRead(bool MemReadVal);
+    void SetMemWrite(bool MemWriteVal);
+    void SetMemToReg(bool MemToRegVal);
+    void SetBranch(bool BranchVal);
+    void SetZero(bool ZeroVal);
+    void SetALUResult(uint32_t ALUResultVal);
+    void SetBranchAddress(uint32_t BranchAddressVal);
+    void SetReadData2(uint32_t ReadData2Val);
+    void SetDestination(uint8_t DesintationVal);
+    bool GetRegWrite() const;
+    bool GetMemRead() const;
+    bool GetMemWrite() const;
+    bool GetMemToReg() const;
+    bool GetBranch() const;
+    bool GetZero() const;
+    uint32_t GetALUResult() const;
+    uint32_t GetBranchAdress() const;
+    uint32_t GetReadData2() const;
+    uint8_t GetDestination() const;
+    void CommitValues();
 
-/* ------------------------------------------------------------------ */
-/* getter functions */
+private:
+    bool RegWrite;
+    bool MemRead;
+    bool MemWrite;
+    bool MemToReg;
+    bool Branch;
+    bool Zero;
+    uint32_t BranchAddress;
+    uint32_t ALUResult;
+    uint32_t ReadData2;
+    uint8_t Destination;
+    bool tempRegWrite;
+    bool tempMemRead;
+    bool tempMemWrite;
+    bool tempMemToReg;
+    bool tempBranch;
+    bool tempZero;
+    uint32_t tempBranchAddress;
+    uint32_t tempALUResult;
+    uint32_t tempReadData2;
+    uint8_t tempDestination;
+};
 
-bool getRegWrite(void);
-bool getMemRead(void);
-bool getMemWrite(void);
-bool getMemToReg(void);
-bool getBranch(void);
-bool getZero(void);
-uint32_t getALUResult(void);
-uint32_t getBranchAdress(void);
-uint32_t getReadData2(void);
-uint8_t getDestination(void);
-
-/* ------------------------------------------------------------------ */
-
-void commitValues(void);
-
-/* ------------------------------------------------------------------ */
+#endif

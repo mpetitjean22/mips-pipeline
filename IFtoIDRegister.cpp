@@ -17,18 +17,18 @@ void IFtoIDRegister::SetInstruction(uint32_t InstructionVal)
 
 /* ------------------------------------------------------------------ */
 
-uint32_t IFtoIDRegister::GetPC(void) const
+uint32_t IFtoIDRegister::GetPC() const
 {
     return PC;
 }
-uint32_t IFtoIDRegister::GetInstruction(void) const
+uint32_t IFtoIDRegister::GetInstruction() const
 {
     return Instruction;
 }
 
 /* ------------------------------------------------------------------ */
 
-void IFtoIDRegister::CommitValues(void)
+void IFtoIDRegister::CommitValues()
 {
     PC = tempPC;
     Instruction = tempInstruction;

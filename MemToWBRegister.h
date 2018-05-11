@@ -1,27 +1,34 @@
-#include <cstdint>
-/* stores all the values of the MEM/EX register */
+#ifndef MemToWBREGISTER_H
+#define MemToWBREGISTER_H
 
-/* ------------------------------------------------------------------ */
-/* setter functions */
+#include "Register.h"
 
-void setRegWrite(bool RegWriteVal);
-void setMemToReg(bool MemToRegVal);
-void setMemoryOutput(uint32_t MemoryOutputVal);
-void setALUResult(uint32_t ALUResultVal);
-void setDestination(uint8_t DesintationVal);
+class MemToWBRegister : public Register {
+public:
+    MemToWBRegister();
+    void SetRegWrite(bool RegWriteVal);
+    void SetMemToReg(bool MemToRegVal);
+    void SetMemoryOutput(uint32_t MemoryOutputVal);
+    void SetALUResult(uint32_t ALUResultVal);
+    void SetDestination(uint8_t DesintationVal);
+    bool GetRegWrite() const;
+    bool GetMemToReg() const;
+    uint32_t GetMemoryOutput() const;
+    uint32_t GetALUResult() const;
+    uint8_t GetDestination() const;
+    void CommitValues();
 
-/* ------------------------------------------------------------------ */
-/* getter functions */
+private:
+    bool MemToReg;
+    bool RegWrite;
+    uint32_t ALUResult;
+    uint32_t MemoryOutput;
+    uint8_t Destination;
+    bool tempMemToReg;
+    bool tempRegWrite;
+    uint32_t tempALUResult;
+    uint32_t tempMemoryOutput;
+    uint8_t tempDestination;
+};
 
-bool getRegWrite(void);
-bool getMemToReg(void);
-uint32_t getMemoryOutput(void);
-uint32_t getALUResult(void);
-uint8_t getDestination(void);
-
-/* ------------------------------------------------------------------ */
-/* commits the old version of the register to the new version */
-
- void commitValues(void);
-
- /* ------------------------------------------------------------------ */
+#endif

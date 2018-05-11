@@ -8,65 +8,54 @@
     (5) ALUResult --> 32
 */
 
-/* ------------------------------------------------------------------ */
-
-static bool MemToReg;
-static bool RegWrite;
-
-static uint32_t ALUResult;
-static uint32_t MemoryOutput;
-
-static uint8_t Destination;
-
-/* ------------------------------------------------------------------ */
-
-static bool tempMemToReg;
-static bool tempRegWrite;
-
-static uint32_t tempALUResult;
-static uint32_t tempMemoryOutput;
-
-static uint8_t tempDestination;
-
-/* ------------------------------------------------------------------ */
-
-void setRegWrite(bool RegWriteVal){
+void MemToWBRegister::SetRegWrite(bool RegWriteVal)
+{
     tempRegWrite = RegWriteVal;
 }
-void setMemToReg(bool MemToRegVal){
+void MemToWBRegister::SetMemToReg(bool MemToRegVal)
+{
     tempMemToReg = MemToRegVal;
 }
-void setMemoryOutput(uint32_t MemoryOutputVal){
+void MemToWBRegister::SetMemoryOutput(uint32_t MemoryOutputVal)
+{
     tempMemoryOutput = MemoryOutputVal;
 }
-void setALUResult(uint32_t ALUResultVal){
+void MemToWBRegister::SetALUResult(uint32_t ALUResultVal)
+{
     tempALUResult = ALUResultVal;
 }
-void setDestination(uint8_t DesintationVal){
+void MemToWBRegister::SetDestination(uint8_t DesintationVal)
+{
     tempDestination = DesintationVal;
 }
 
 /* ------------------------------------------------------------------ */
 
-bool getRegWrite(void){
+bool MemToWBRegister::GetRegWrite() const
+{
     return RegWrite;
 }
-bool getMemToReg(void){
+bool MemToWBRegister::GetMemToReg() const
+{
     return MemToReg;
 }
-uint32_t getMemoryOutput(void){
+uint32_t MemToWBRegister::GetMemoryOutput() const
+{
     return MemoryOutput;
 }
-uint32_t getALUResult(void){
+uint32_t MemToWBRegister::GetALUResult() const
+{
     return ALUResult;
 }
-uint8_t getDestination(void){
+uint8_t MemToWBRegister::GetDestination() const
+{
     return Destination;
 }
 
 /* ------------------------------------------------------------------ */
 
-void commitValues(void){
+void MemToWBRegister::CommitValues()
+{
     RegWrite = tempRegWrite;
     MemToReg = tempMemToReg;
     ALUResult = tempALUResult;

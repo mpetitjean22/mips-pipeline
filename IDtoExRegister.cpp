@@ -17,147 +17,134 @@
 (14) Dest2 --> 5
 */
 
-/* ------------------------------------------------------------------ */
-
-static bool RegDst;
-static bool ALUop1;
-static bool ALUop2;
-static bool ALUSrc;
-static bool Branch;
-static bool MemRead;
-static bool MemWrite;
-static bool RegWrite;
-static bool MemToReg;
-
-static uint32_t PC;
-static uint32_t ReadData1;
-static uint32_t ReadData2;
-static uint32_t ImmediateValue;
-
-/* gonna have to check to make sure its actually 5 bits */
-static uint8_t Dest1;
-static uint8_t Dest2;
-
-/* ------------------------------------------------------------------ */
-
-static bool tempRegDst;
-static bool tempALUop1;
-static bool tempALUop2;
-static bool tempALUSrc;
-static bool tempBranch;
-static bool tempMemRead;
-static bool tempMemWrite;
-static bool tempRegWrite;
-static bool tempMemToReg;
-
-static uint32_t tempPC;
-static uint32_t tempReadData1;
-static uint32_t tempReadData2;
-static uint32_t tempImmediateValue;
-
-/* gonna have to check to make sure its actually 5 bits */
-static uint8_t tempDest1;
-static uint8_t tempDest2;
-
-/* ------------------------------------------------------------------ */
-
-void setRegDst(bool RegDestVal){
+void IDtoExRegister::SetRegDst(bool RegDestVal)
+{
     tempRegDst = RegDestVal;
 }
-void setALUop1(bool ALUTop1Val){
+void IDtoExRegister::SetALUop1(bool ALUop1Val)
+{
     tempALUop1 = ALUop1Val;
 }
-void setALUop2(bool ALUTop2Val){
+void IDtoExRegister::SetALUop2(bool ALUop2Val)
+{
     tempALUop2 = ALUop2Val;
 }
-void setALUSrc(bool ALUSrcVal){
+void IDtoExRegister::SetALUSrc(bool ALUSrcVal)
+{
     tempALUSrc = ALUSrcVal;
 }
-void setBranch(bool BranchVal){
+void IDtoExRegister::SetBranch(bool BranchVal)
+{
     tempBranch = BranchVal;
 }
-void setMemRead(bool MemReadVal){
+void IDtoExRegister::SetMemRead(bool MemReadVal)
+{
     tempMemRead = MemReadVal;
 }
-void setMemWrite(bool MemWriteVal){
+void IDtoExRegister::SetMemWrite(bool MemWriteVal)
+{
     tempMemWrite = MemWriteVal;
 }
-void setRegWrite(bool RegWriteVal){
+void IDtoExRegister::SetRegWrite(bool RegWriteVal)
+{
     tempRegWrite = RegWriteVal;
 }
-void setMemToReg(bool MemToRegVal){
+void IDtoExRegister::SetMemToReg(bool MemToRegVal)
+{
     tempMemToReg = MemToRegVal;
 }
-void setPC(uint32_t PCVal){
+void IDtoExRegister::SetPC(uint32_t PCVal)
+{
     tempPC = PCVal;
 }
-void setReadData1(uint32_t ReadData1Val){
+void IDtoExRegister::SetReadData1(uint32_t ReadData1Val)
+{
     tempReadData1 = ReadData1Val;
 }
-void setReadData2(uint32_t ReadData2Val){
+void IDtoExRegister::SetReadData2(uint32_t ReadData2Val)
+{
     tempReadData2 = ReadData2Val;
 }
-void setImmediateValue(uint32_t ImmediateValueVal){
+void IDtoExRegister::SetImmediateValue(uint32_t ImmediateValueVal)
+{
     tempImmediateValue = ImmediateValueVal;
 }
-void setDest1(uint8_t Dest1Val){
+void IDtoExRegister::SetDest1(uint8_t Dest1Val)
+{
     tempDest1 = Dest1Val;
 }
-void setDest2(uint8_t Dest2Val){
+void IDtoExRegister::SetDest2(uint8_t Dest2Val)
+{
     tempDest2 = Dest2Val;
 }
 
 /* ------------------------------------------------------------------ */
 
-bool getRegDst(void){
-    return RegDest;
+bool IDtoExRegister::GetRegDst() const
+{
+    return RegDst;
 }
-bool getALUop1(void){
+bool IDtoExRegister::GetALUop1() const
+{
     return ALUop1;
 }
-bool getALUop2(void){
+bool IDtoExRegister::GetALUop2() const
+{
     return ALUop2;
 }
-bool getALUSrc(void){
+bool IDtoExRegister::GetALUSrc() const
+{
     return ALUSrc;
 }
-bool getBranch(void){
+bool IDtoExRegister::GetBranch() const
+{
     return Branch;
 }
-bool getMemRead(void){
+bool IDtoExRegister::GetMemRead() const
+{
     return MemRead;
 }
-bool getMemWrite(void){
+bool IDtoExRegister::GetMemWrite() const
+{
     return MemWrite;
 }
-bool getRegWrite(void){
+bool IDtoExRegister::GetRegWrite() const
+{
     return RegWrite;
 }
-bool getMemToReg(void){
+bool IDtoExRegister::GetMemToReg() const
+{
     return MemToReg;
 }
-uint32_t getPC(void){
+uint32_t IDtoExRegister::GetPC() const
+{
     return PC;
 }
-uint32_t getReadData1(void){
+uint32_t IDtoExRegister::GetReadData1() const
+{
     return ReadData1;
 }
-uint32_t getReadData2(void){
+uint32_t IDtoExRegister::GetReadData2() const
+{
     return ReadData2;
 }
-uint32_t getImmediateValue(void){
+uint32_t IDtoExRegister::GetImmediateValue() const
+{
     return ImmediateValue;
 }
-uint8_t getDest1(void){
+uint8_t IDtoExRegister::GetDest1() const
+{
     return Dest1;
 }
-uint8_t getDest2(void){
+uint8_t IDtoExRegister::GetDest2() const
+{
     return Dest2;
 }
 
 /* ------------------------------------------------------------------ */
 
-void commitValues(void){
+void IDtoExRegister::CommitValues()
+{
     RegDst = tempRegDst;
     ALUop1 = tempALUop1;
     ALUop2 = tempALUop2;
