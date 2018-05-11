@@ -5,41 +5,30 @@
     (1) PC --> 32
     (2) Instruction --> 32
 */
-/* ------------------------------------------------------------------ */
 
-static uint32_t PC;
-static uint32_t Instruction;
-
-/* ------------------------------------------------------------------ */
-
-static uint32_t tempPC;
-static uint32_t tempInstruction;
-
-/* ------------------------------------------------------------------ */
-
-void setPC(uint32_t PCVal)
+void IFtoIDRegister::SetPC(uint32_t PCVal)
 {
     tempPC = PCVal;
 }
-void setInstruction(uint32_t InstructionVal)
+void IFtoIDRegister::SetInstruction(uint32_t InstructionVal)
 {
     tempInstruction = InstructionVal;
 }
 
 /* ------------------------------------------------------------------ */
 
-uint32_t getPC(void)
+uint32_t IFtoIDRegister::GetPC(void) const
 {
     return PC;
 }
-uint32_t getInstruction(void)
+uint32_t IFtoIDRegister::GetInstruction(void) const
 {
     return Instruction;
 }
 
 /* ------------------------------------------------------------------ */
 
-void commitValues(void)
+void IFtoIDRegister::CommitValues(void)
 {
     PC = tempPC;
     Instruction = tempInstruction;
