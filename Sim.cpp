@@ -5,6 +5,7 @@ MemToWBRegister* MEMtoWB;
 EXtoMemRegister* EXtoMEM;
 IFtoIDRegister* IFtoID;
 
+Register_T regs;
 
 int main(void){
     //make the registers for each of the stages
@@ -13,6 +14,8 @@ int main(void){
     MEMtoWB = new MemToWBRegister;
     EXtoMEM = new EXtoMemRegister;
     IFtoID = new IFtoIDRegister;
+    RegisterInfo reg;
+    regs = newReg();
 
     for(int i =0; i<7; i++){
         runInstructionFetch();
@@ -31,6 +34,8 @@ int main(void){
         printf("Cycle: %d \n", cycleNum);
         printCurrent();
     }
+    convertToRegInfo(regs, &reg);
+    dumpRegisterState(reg);
 
     // start the cycling process
     printf("HII THIS WORKS I HOPE IDKK \n");
