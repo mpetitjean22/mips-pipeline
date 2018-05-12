@@ -8,13 +8,18 @@
 
 #include "sim.h"
 
+IDtoExRegister* IDtoEX;
+MemToWBRegister* MEMtoWB;
+EXtoMemRegister* EXtoMEM;
+IFtoIDRegister* IFtoID;
+
 int main(void){
     //make the registers for each of the stages
 
-    IDtoExRegister* IDtoEX = new IDtoExRegister;
-    MemToWBRegister* MEMtoWB = new MemToWBRegister;
-    EXtoMemRegister* EXtoMEM = new EXtoMemRegister;
-    IFtoIDRegister* IFtoID = new IFtoIDRegister;
+    IDtoEX = new IDtoExRegister;
+    MEMtoWB = new MemToWBRegister;
+    EXtoMEM = new EXtoMemRegister;
+    IFtoID = new IFtoIDRegister;
 
     runInstructionFetch(IFtoID);
 
