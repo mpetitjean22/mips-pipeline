@@ -12,6 +12,7 @@
 
 
 int getCurrentInstructionNum(int Stage);
-void setCurrentInstructionNum(int Stage, uint32_t Num);
-
+void setCurrentInstructionNum(int Stage, uint32_t PCVal);
+void updateCurrentInstructionNum();
+void printCurrent();
 #endif

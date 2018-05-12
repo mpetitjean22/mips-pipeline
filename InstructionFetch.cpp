@@ -7,10 +7,16 @@ static uint32_t PC = 0;
 
 
 static uint32_t getSomething(uint32_t PCVal){
-    return (uint32_t)10;
+    if(PCVal == 0){
+        return (uint32_t)10;
+    }
+    else if(PCVal == 4){
+        return (uint32_t)20;
+    }
+
 }
 
-void runInstructionFetch(IFtoIDRegister *IFtoID){
+void runInstructionFetch(){
 
     /* grab + write the instruction address*/
     Instruction = getSomething(PC);
@@ -22,4 +28,5 @@ void runInstructionFetch(IFtoIDRegister *IFtoID){
     /* Update + write the new PC */
     PC = PC + 4;
     IFtoID->SetPC(PC);
+    setCurrentInstructionNum(0, PC/4);
 }

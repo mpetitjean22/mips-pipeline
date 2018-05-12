@@ -4,6 +4,6 @@
 #include <inttypes.h>
 #include "sim.h"
 
-void runInstructionFetch(IFtoIDRegister* IFtoID);
+void runInstructionFetch();
 
 #endif
