@@ -1,10 +1,10 @@
 #ifndef IFtoIDREGISTER_H
 #define IFtoIDREGISTER_H
 
-#include "Register.h"
+#include "StageRegister.h"
 #include <inttypes.h>
 
-class IFtoIDRegister : public Register {
+class IFtoIDRegister : public StageRegister {
 public:
     IFtoIDRegister();
     void SetPC(uint32_t PCVal);

@@ -1,9 +1,9 @@
 #ifndef EXtoMemREGISTER_H
 #define EXtoMemREGISTER_H
 
-#include "Register.h"
+#include "StageRegister.h"
 
-class EXtoMemRegister : public Register {
+class EXtoMemRegister : public StageRegister {
 public:
     EXtoMemRegister();
     void SetRegWrite(bool RegWriteVal);

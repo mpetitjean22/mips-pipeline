@@ -1,9 +1,9 @@
 #ifndef IDtoExREGISTER_H
 #define IDtoExREGISTER_H
 
-#include "Register.h"
+#include "StageRegister.h"
 
-class IDtoExRegister : public Register {
+class IDtoExRegister : public StageRegister {
 public:
     IDtoExRegister();
     void SetRegDst(bool RegDestVal);

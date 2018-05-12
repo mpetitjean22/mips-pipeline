@@ -1,9 +1,9 @@
 #ifndef MemToWBREGISTER_H
 #define MemToWBREGISTER_H
 
-#include "Register.h"
+#include "StageRegister.h"
 
-class MemToWBRegister : public Register {
+class MemToWBRegister : public StageRegister {
 public:
     MemToWBRegister();
     void SetRegWrite(bool RegWriteVal);
