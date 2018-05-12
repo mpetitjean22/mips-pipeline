@@ -1,5 +1,10 @@
- void runWriteBack(){
-    if(MEMtoWB.GetRegWrite() == true){
+#include "sim.h"
+
+extern MemToWBRegister* MEMtoWB;
+
+void runWriteBack()
+{
+    if (MEMtoWB->GetRegWrite()) {
         // write to ALUSrc to Destination!
     }
- }
+}

@@ -1,5 +1,7 @@
 #include "InstructionFetch.h"
 #include "sim.h"
+
+extern IFtoIDRegister* IFtoID;
 static uint32_t Instruction;
 static uint32_t PC = 0;
 

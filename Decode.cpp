@@ -1,3 +1,8 @@
+#include "sim.h"
+
+extern IDtoExRegister* IDtoEX;
+extern IFtoIDRegister* IFtoID;
+
 static bool isJumpInstruction;
 static uint32_t Instruction;
 
@@ -5,13 +10,13 @@ static uint8_t getOpcode(uint32_t instr){
     return (uint8_t)((instr >> 26) & 0x3f);
 }
 static uint8_t getReadRegister1(uint32_t instr){
-    return (uint8_t)((instr >> 21) & 1F);
+    return (uint8_t)((instr >> 21) & 0x1f);
 }
-static uint8_t getReadRegister1(uint32_t instr){
-    return (uint8_t)((instr >> 16) & 1F);
+static uint8_t getReadRegister2(uint32_t instr){
+    return (uint8_t)((instr >> 16) & 0x1f);
 }
 static uint8_t getDest2(uint32_t instr){
-    return (uint8_t)((instr >> 11) & 1F);
+    return (uint8_t)((instr >> 11) & 0x1f);
 }
 static uint16_t getImmediate(uint32_t instr){
     return instr & 0xffff;
@@ -34,7 +39,7 @@ void runDecode(){
     uint32_t immediateSE;
 
     //(1) Get the values we need from instruction
-    Instruction     = IFtoID.GetInstruction();
+    Instruction     = IFtoID->GetInstruction();
     opcode          = getOpcode(Instruction);                      // 26 - 31 (opcode)
     readRegister1   = getReadRegister1(Instruction);               // 21 - 25 (RS)
     readRegister2   = getReadRegister2(Instruction);               // 16 - 20 (RT)
@@ -44,13 +49,13 @@ void runDecode(){
 
 
     //(2) Write the values to ID/EX
-    IDtoEX.SetPC(IFtoID.GetPC());
+    IDtoEX->SetPC(IFtoID->GetPC());
     // IDtoEX.SetReadData1 = CALL TO REGISTER (readregister1)
     // IDtoEX.SetReadData2 = CALL TO REGISTER (readregister2)
-    IDtoEx.SetImmediateValue(immediateSE);
-    IDtoEx.SetDest1(readRegister2);
-    IDtoEX.SetDest2(dest2);
-    IDtoEX.SetRS(readRegister1);
+    IDtoEX->SetImmediateValue(immediateSE);
+    IDtoEX->SetDest1(readRegister2);
+    IDtoEX->SetDest2(dest2);
+    IDtoEX->SetRS(readRegister1);
 
     // Write the control Flags (hard coded for add)
     bool RegDst     = true;
@@ -63,13 +68,13 @@ void runDecode(){
     bool RegWrite   = true;
     bool MemToReg   = false;
 
-    IDtoEX.SetRegDst(RegDest);
-    IDtoEX.SetALUop1(ALUop1);
-    IDtoEX.SetALUop2(ALUop2);
-    IDtoEX.SetALUSrc(ALUSrc);
-    IDtoEX.SetBranch(Branch);
-    IDtoEX.SetMemRead(MemRead);
-    IDtoEX.SetMemWrite(MemWrite);
-    IDtoEx.SetRegWrite(RegWrite);
-    IDtoEX.SetMemToReg(MemToReg);
+    IDtoEX->SetRegDst(RegDst);
+    IDtoEX->SetALUop1(ALUop1);
+    IDtoEX->SetALUop2(ALUop2);
+    IDtoEX->SetALUSrc(ALUSrc);
+    IDtoEX->SetBranch(Branch);
+    IDtoEX->SetMemRead(MemRead);
+    IDtoEX->SetMemWrite(MemWrite);
+    IDtoEX->SetRegWrite(RegWrite);
+    IDtoEX->SetMemToReg(MemToReg);
 }
