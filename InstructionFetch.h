@@ -1,3 +1,9 @@
-#include <inttypes.h>
+#ifndef INSTRUCTIONFETCH_H
+#define INSTRUCTIONFETCH_H
 
-void runInstructionFetch(IFtoIDRegister* IFtoID); 
+#include <inttypes.h>
+#include "sim.h"
+
+void runInstructionFetch(IFtoIDRegister* IFtoID);
+
+#endif
