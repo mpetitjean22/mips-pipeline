@@ -1,11 +1,12 @@
 #include "WriteBack.h"
 #include "sim.h"
 
+extern Register_T regs;
 extern MemToWBRegister* MEMtoWB;
 
 void runWriteBack()
 {
     if (MEMtoWB->GetRegWrite()) {
-        // write to ALUSrc to Destination!
+        generalRegWrite(regs, (int)MEMtoWB->GetDestination(), MEMtoWB->GetALUResult());
     }
 }

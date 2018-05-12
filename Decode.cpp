@@ -3,9 +3,31 @@
 
 extern IDtoExRegister* IDtoEX;
 extern IFtoIDRegister* IFtoID;
+extern Register_T regs;
 
 static bool isJumpInstruction;
 static uint32_t Instruction;
+
+enum OP_IDS
+{
+    //R-type opcodes...
+    OP_ZERO = 0
+};
+enum FUN_IDS
+{
+    FUN_ADD = 0x20,
+    FUN_ADDU = 0x21,
+    FUN_AND = 0x24,
+    FUN_JR = 0x08,
+    FUN_NOR = 0x27,
+    FUN_OR = 0x25,
+    FUN_SLT = 0x2a,
+    FUN_SLTU = 0x2b,
+    FUN_SLL = 0x00,
+    FUN_SRL = 0x02,
+    FUN_SUB = 0x22,
+    FUN_SUBU = 0x23
+};
 
 static uint8_t getOpcode(uint32_t instr){
     return (uint8_t)((instr >> 26) & 0x3f);
@@ -32,6 +54,38 @@ static uint32_t somethingToSignExtend(uint16_t imm){
     return newMasked;
 }
 
+static void writeControlLines(uint8_t opcode, uint8_t func){
+    bool RegDst     = 0;
+    bool ALUop1     = 0;
+    bool ALUop2     = 0;
+    bool ALUSrc     = 0;
+    bool Branch     = 0;
+    bool MemRead    = 0;
+    bool MemWrite   = 0;
+    bool RegWrite   = 0;
+    bool MemToReg   = 0;
+
+    // R-Type Instructions
+    if(opcode == OP_ZERO){
+        switch(func){
+            case FUN_ADD:
+                RegDst = 1;
+                ALUop1 = 1;
+                RegWrite = 1;
+                break;
+        }
+    }
+
+    IDtoEX->SetRegDst(RegDst);
+    IDtoEX->SetALUop1(ALUop1);
+    IDtoEX->SetALUop2(ALUop2);
+    IDtoEX->SetALUSrc(ALUSrc);
+    IDtoEX->SetBranch(Branch);
+    IDtoEX->SetMemRead(MemRead);
+    IDtoEX->SetMemWrite(MemWrite);
+    IDtoEX->SetRegWrite(RegWrite);
+    IDtoEX->SetMemToReg(MemToReg);
+}
 void runDecode(){
     uint8_t opcode;
     uint8_t readRegister1;
@@ -48,7 +102,7 @@ void runDecode(){
     immediateSE     = somethingToSignExtend(
                         getImmediate(Instruction));                  // 0 - 15 --> 32 sign extended
 
-/*    printf("Instruction: %d \n", (int)Instruction);
+/*  printf("Instruction: %d \n", (int)Instruction);
     printf("opcode: %d \n", (int)opcode);
     printf("RS: %d \n", (int)readRegister1);
     printf("RT: %d \n", (int)readRegister2);
@@ -56,35 +110,17 @@ void runDecode(){
 */
     //(2) Write the values to ID/EX
     IDtoEX->SetPC(IFtoID->GetPC());
-    // these were hardcoded
-    IDtoEX->SetReadData1((uint32_t)10);
-    IDtoEX->SetReadData2((uint32_t)20);
-
+    IDtoEX->SetReadData1(generalRegRead(regs, (int)readRegister1));
+    IDtoEX->SetReadData2(generalRegRead(regs, (int)readRegister2));
     IDtoEX->SetImmediateValue(immediateSE);
     IDtoEX->SetDest1(readRegister2);
     IDtoEX->SetDest2(dest2);
     IDtoEX->SetRS(readRegister1);
 
     // Write the control Flags (hard coded for add)
-    bool RegDst     = true;
-    bool ALUop1     = true;
-    bool ALUop2     = false;
-    bool ALUSrc     = false;
-    bool Branch     = false;
-    bool MemRead    = false;
-    bool MemWrite   = false;
-    bool RegWrite   = true;
-    bool MemToReg   = false;
+    uint8_t funct = Instruction & 0x3f;
+    writeControlLines(opcode, funct);
 
-    IDtoEX->SetRegDst(RegDst);
-    IDtoEX->SetALUop1(ALUop1);
-    IDtoEX->SetALUop2(ALUop2);
-    IDtoEX->SetALUSrc(ALUSrc);
-    IDtoEX->SetBranch(Branch);
-    IDtoEX->SetMemRead(MemRead);
-    IDtoEX->SetMemWrite(MemWrite);
-    IDtoEX->SetRegWrite(RegWrite);
-    IDtoEX->SetMemToReg(MemToReg);
-
+    // update the instruction position
     setCurrentInstructionNum(2, getCurrentInstructionNum(1));
 }

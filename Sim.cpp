@@ -17,7 +17,10 @@ int main(void){
     RegisterInfo reg;
     regs = newReg();
 
-    for(int i =0; i<7; i++){
+    generalRegWrite(regs, 8, (uint32_t)6);
+    generalRegWrite(regs, 9, (uint32_t)7);
+
+    for(int i =0; i<5; i++){
         runInstructionFetch();
         runDecode();
         runExecute();

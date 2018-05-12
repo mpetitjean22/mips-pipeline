@@ -162,6 +162,7 @@ void IDtoExRegister::CommitValues()
     MemRead = tempMemRead;
     MemWrite = tempMemWrite;
     MemToReg = tempMemToReg;
+    RegWrite = tempRegWrite; 
     PC = tempPC;
     ReadData1 = tempReadData1;
     ReadData2 = tempReadData2;
