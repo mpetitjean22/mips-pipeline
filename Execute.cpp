@@ -18,15 +18,47 @@ enum FUN_IDS
     FUN_SUB = 0x22,
     FUN_SUBU = 0x23
 };
+enum CONTROl_VALS
+{
+    AND         = 0,
+    OR          = 1,
+    ADD         = 2,
+    SUBTRACT    = 6,
+    SLT         = 7,
+    SHIFT_LEFT  = 8,
+    SHIFT_RIGHT = 9,
+    NOR         = 12
+};
 
-static void performALU(uint32_t source1, uint32_t source2, uint8_t Control){
+static void performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint8_t shmt){
     uint32_t Result = 0;
     bool Zero = 0;
-
     switch(Control){
-        // add
-        case 2:
-            Result=(uint32_t)(source1 + source2);
+        case AND:
+            Result = (uint32_t)(source1 - source2);
+            break;
+        case OR:
+            Result = (uint32_t)(source1 | source2);
+            break;
+        case ADD:
+            Result = (uint32_t)(source1 + source2);
+            break;
+        case SUBTRACT:
+            Result = (uint32_t)(source1 - source2);
+            break;
+        case SLT:
+            if(source1 < source2){
+                Result = (uint32_t)1;
+            }
+            break;
+        case SHIFT_LEFT:
+            Result = (uint32_t)(source1 << shmt);
+            break;
+        case SHIFT_RIGHT:
+            Result = (uint32_t)(source1 >> shmt);
+            break;
+        case NOR:
+            Result = (uint32_t)~(source1 | source2);
             break;
     }
     if(Result == 0){
@@ -40,9 +72,34 @@ static uint8_t ALUControl(uint8_t func, bool op1, bool op2){
     uint8_t ALUControlInput = 0;
     if(op1){
         switch(func){
-            case FUN_ADD:
+            case FUN_ADD:                       // HANDLE SIGNS!
             case FUN_ADDU:
-                ALUControlInput = 2;
+                ALUControlInput = ADD;
+                break;
+            case FUN_AND:
+                ALUControlInput = AND;
+                break;
+            case FUN_JR:                        // IMPLEMENT JUMPS!
+                break;
+            case FUN_NOR:
+                // we need a NOR
+                break;
+            case FUN_OR:
+                ALUControlInput = OR;
+                break;
+            case FUN_SLT:                       // HANDLE SIGNS!
+            case FUN_SLTU:
+                ALUControlInput = SLT;
+                break;
+            case FUN_SLL:
+                ALUControlInput = SHIFT_LEFT;
+                break;
+            case FUN_SRL:
+                ALUControlInput = SHIFT_RIGHT;
+                break;
+            case FUN_SUB:                      // HANDLE SIGNS!
+            case FUN_SUBU:
+                ALUControlInput = SUBTRACT;
                 break;
         }
     }
@@ -58,7 +115,7 @@ void runExecute(){
     uint32_t readData2  = IDtoEX->GetReadData2();
     uint32_t immediate  = IDtoEX->GetImmediateValue();
     uint32_t PC     = IDtoEX->GetPC();
-    uint8_t shmt    = IDtoEX->GetImmediateValue(); // shorten this (6 - 10)
+    uint8_t shmt    = ((IDtoEX->GetImmediateValue()) << 6) & 0x1F;
     uint8_t funct   = (IDtoEX->GetImmediateValue()) & 0x3F;
     uint8_t rs      = IDtoEX->GetRS();
     uint8_t dest1   = IDtoEX->GetDest1();
@@ -68,10 +125,10 @@ void runExecute(){
 
 // (2) ALU Execution
     if(ALUSrc){
-        performALU(readData1, immediate, ALUControl(funct, ALUop1, ALUop2));
+        performALU(readData1, immediate, ALUControl(funct, ALUop1, ALUop2), shmt);
     }
     else{
-        performALU(readData1, readData2, ALUControl(funct, ALUop1, ALUop2));
+        performALU(readData1, readData2, ALUControl(funct, ALUop1, ALUop2), shmt);
     }
 
 // (3) Write to EX/MEM register
