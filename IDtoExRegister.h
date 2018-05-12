@@ -59,6 +59,7 @@ private:
     uint32_t ImmediateValue;
     uint8_t Dest1;
     uint8_t Dest2;
+    uint8_t RS;
 
     bool tempRegDst;
     bool tempALUop1;
@@ -75,6 +76,7 @@ private:
     uint32_t tempImmediateValue;
     uint8_t tempDest1;
     uint8_t tempDest2;
+    uint8_t tempRS;
 };
 
 #endif

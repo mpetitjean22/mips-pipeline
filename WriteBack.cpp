@@ -1,3 +1,4 @@
+#include "WriteBack.h"
 #include "sim.h"
 
 extern MemToWBRegister* MEMtoWB;

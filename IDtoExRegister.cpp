@@ -17,7 +17,7 @@
 (14) Dest2 --> 5
 */
 IDtoExRegister::IDtoExRegister(){
-    
+
 }
 void IDtoExRegister::SetRegDst(bool RegDestVal)
 {
@@ -78,6 +78,10 @@ void IDtoExRegister::SetDest1(uint8_t Dest1Val)
 void IDtoExRegister::SetDest2(uint8_t Dest2Val)
 {
     tempDest2 = Dest2Val;
+}
+void IDtoExRegister::SetRS(uint8_t RSVal)
+{
+    tempRS = RSVal;
 }
 
 /* ------------------------------------------------------------------ */
@@ -142,7 +146,10 @@ uint8_t IDtoExRegister::GetDest2() const
 {
     return Dest2;
 }
-
+uint8_t IDtoExRegister::GetRS() const
+{
+    return RS;
+}
 /* ------------------------------------------------------------------ */
 
 void IDtoExRegister::CommitValues()
@@ -161,6 +168,7 @@ void IDtoExRegister::CommitValues()
     ImmediateValue = tempImmediateValue;
     Dest1 = tempDest1;
     Dest2 = tempDest2;
+    RS = tempRS;
 }
 
 /* ------------------------------------------------------------------ */

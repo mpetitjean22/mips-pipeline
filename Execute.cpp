@@ -1,3 +1,4 @@
+#include "Execute.h"
 #include "sim.h"
 
 extern IDtoExRegister* IDtoEX;
@@ -35,9 +36,11 @@ void runExecute(){
     EXtoMEM->SetMemWrite(IDtoEX->GetMemWrite());
     EXtoMEM->SetMemToReg(IDtoEX->GetMemToReg());
     EXtoMEM->SetBranch(IDtoEX->GetBranch());
-    EXtoMEM->SetZero(IDtoEX->GetZero());
+    //EXtoMEM->SetZero(IDtoEX->GetZero());
     EXtoMEM->SetALUResult(ALUResult);
-    EXtoMEM->SetBranchAddress(PC + IDtoEX->GetImmediate() << 2);
+    //EXtoMEM->SetBranchAddress(PC + IDtoEX->GetImmediate() << 2);
     EXtoMEM->SetReadData2(readData2);
     EXtoMEM->SetDestination(dest2); // hard coded for now
+
+    setCurrentInstructionNum(3, getCurrentInstructionNum(2)); 
 }

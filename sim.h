@@ -8,8 +8,10 @@
 #include "EXtoMemRegister.h"
 #include "IDtoExRegister.h"
 #include "InstructionFetch.h"
-
-
+#include "Decode.h"
+#include "Execute.h"
+#include "Memory.h"
+#include "WriteBack.h"
 
 int getCurrentInstructionNum(int Stage);
 void setCurrentInstructionNum(int Stage, uint32_t PCVal);

@@ -1,3 +1,4 @@
+#include "Decode.h"
 #include "sim.h"
 
 extern IDtoExRegister* IDtoEX;
@@ -47,11 +48,18 @@ void runDecode(){
     immediateSE     = somethingToSignExtend(
                         getImmediate(Instruction));                  // 0 - 15 --> 32 sign extended
 
-
+/*    printf("Instruction: %d \n", (int)Instruction);
+    printf("opcode: %d \n", (int)opcode);
+    printf("RS: %d \n", (int)readRegister1);
+    printf("RT: %d \n", (int)readRegister2);
+    printf("RD: %d \n", (int)dest2);
+*/
     //(2) Write the values to ID/EX
     IDtoEX->SetPC(IFtoID->GetPC());
-    // IDtoEX.SetReadData1 = CALL TO REGISTER (readregister1)
-    // IDtoEX.SetReadData2 = CALL TO REGISTER (readregister2)
+    // these were hardcoded
+    IDtoEX->SetReadData1((uint32_t)10);
+    IDtoEX->SetReadData2((uint32_t)20);
+
     IDtoEX->SetImmediateValue(immediateSE);
     IDtoEX->SetDest1(readRegister2);
     IDtoEX->SetDest2(dest2);
@@ -77,4 +85,6 @@ void runDecode(){
     IDtoEX->SetMemWrite(MemWrite);
     IDtoEX->SetRegWrite(RegWrite);
     IDtoEX->SetMemToReg(MemToReg);
+
+    setCurrentInstructionNum(2, getCurrentInstructionNum(1));
 }

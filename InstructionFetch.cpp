@@ -8,10 +8,13 @@ static uint32_t PC = 0;
 
 static uint32_t getSomething(uint32_t PCVal){
     if(PCVal == 0){
-        return (uint32_t)10;
+        return (uint32_t)0x210820;
     }
     else if(PCVal == 4){
         return (uint32_t)20;
+    }
+    else if(PCVal == 8){
+        return (uint32_t)30;
     }
 
 }
