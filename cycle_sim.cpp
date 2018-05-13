@@ -1,9 +1,13 @@
 #include "sim.h"
+#include "Cache.h"
 
 IDtoExRegister* IDtoEX;
 MemToWBRegister* MEMtoWB;
 EXtoMemRegister* EXtoMEM;
 IFtoIDRegister* IFtoID;
+Cache *ICache;
+Cache *DCache;
+int cycleNum;
 
 Register_T regs;
 
@@ -14,7 +18,7 @@ int main(void){
     MEMtoWB = new MemToWBRegister;
     EXtoMEM = new EXtoMemRegister;
     IFtoID = new IFtoIDRegister;
-    RegisterInfo reg;
+    RegisterInfo reginfo;
     regs = newReg();
 
     generalRegWrite(regs, 8, (uint32_t)11);
@@ -42,8 +46,8 @@ int main(void){
         printf("Cycle: %d \n", cycleNum);
         printCurrent();
     }
-    convertToRegInfo(regs, &reg);
-    dumpRegisterState(reg);
+    convertToRegInfo(regs, &reginfo);
+    dumpRegisterState(reginfo);
 
     // start the cycling process
     printf("HII THIS WORKS I HOPE IDKK \n");
@@ -75,4 +79,56 @@ void printCurrent(){
         printf("%s: %d \n", words[i],(int)Current[i]);
     }
     printf("\n");
+}
+
+int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *mainMem)
+{
+    ICache = new Cache(icConfig, mainMem);
+    DCache = new Cache(dcConfig, mainMem);
+    IDtoEX = new IDtoExRegister;
+    MEMtoWB = new MemToWBRegister;
+    EXtoMEM = new EXtoMemRegister;
+    IFtoID = new IFtoIDRegister;
+    regs = newReg();
+    cycleNum = 0;
+    return 0; // unused
+}
+
+int runCycles(uint32_t cycles)
+{
+    for(uint32_t i = 0; i < cycles; i++) {
+        runInstructionFetch();
+        runWriteBack();
+        runDecode();
+        runExecute();
+        runMemory();
+
+        IFtoID->CommitValues();
+        IDtoEX->CommitValues();
+        EXtoMEM->CommitValues();
+        MEMtoWB->CommitValues();
+
+        // need to check for halt instruction in WB and return 1 if it occurs
+        cycleNum++;
+
+        updateCurrentInstructionNum();
+    }
+
+    // we should be using dumppiplinestate instead
+    printf("Cycle: %d \n", cycleNum);
+    printCurrent();
+
+    return 0;
+}
+
+int runTillHalt()
+{
+
+    // run program until halt is received
+    return 0; // unused
+}
+
+int finaliseSimulator() {
+    // needs to be implemented
+    return 0;
 }
