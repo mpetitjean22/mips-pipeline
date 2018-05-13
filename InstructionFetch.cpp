@@ -5,16 +5,19 @@ extern IFtoIDRegister* IFtoID;
 static uint32_t Instruction;
 static uint32_t PC = 0;
 
-/* my imaginary instruction cache */ 
+/* my imaginary instruction cache */
 static uint32_t getSomething(uint32_t PCVal){
     if(PCVal == 0){
-        return (uint32_t)0x1095020;
+        return (uint32_t)0x1285020;
     }
     else if(PCVal == 4){
-        return (uint32_t)20;
+        return (uint32_t)0x18B6820;
     }
     else if(PCVal == 8){
-        return (uint32_t)30;
+        return (uint32_t)0x1AA7020;
+    }
+    else if(PCVal == 12){
+        return (uint32_t)0x1CA7822;
     }
 
 }

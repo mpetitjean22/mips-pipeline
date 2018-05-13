@@ -3,6 +3,7 @@
 
 extern IDtoExRegister* IDtoEX;
 extern EXtoMemRegister* EXtoMEM;
+extern MemToWBRegister* MEMtoWB;
 enum FUN_IDS
 {
     FUN_ADD = 0x20,
@@ -67,10 +68,10 @@ static void performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint
     EXtoMEM->SetALUResult(Result);
     EXtoMEM->SetZero(Zero);
 }
-static uint8_t ALUControl(uint8_t func, bool op1, bool op2){
+static uint8_t ALUControl(uint8_t func, bool op1, bool op2, bool op3){
     // R type instruction
     uint8_t ALUControlInput = 0;
-    if(op1){
+    if(op1==1 && op2 == 0 && op3 == 0){
         switch(func){
             case FUN_ADD:                       // HANDLE SIGNS!
             case FUN_ADDU:
@@ -82,7 +83,7 @@ static uint8_t ALUControl(uint8_t func, bool op1, bool op2){
             case FUN_JR:                        // IMPLEMENT JUMPS!
                 break;
             case FUN_NOR:
-                // we need a NOR
+                ALUControlInput = NOR;
                 break;
             case FUN_OR:
                 ALUControlInput = OR;
@@ -103,12 +104,29 @@ static uint8_t ALUControl(uint8_t func, bool op1, bool op2){
                 break;
         }
     }
+    else if(op1 == 0 && op2 ==0 && op3==0){
+        ALUControlInput = ADD;
+    }
+    else if(op1 == 0 && op2 == 1 && op3 == 0){
+        ALUControlInput = SUBTRACT;
+    }
+    else if(op1 == 0 && op2 == 1 && op3 == 1){
+        ALUControlInput = OR;
+    }
+    else if(op1 == 0 && op2 == 0 && op3 == 1){
+        ALUControlInput = AND;
+    }
+    else if(op1 == 1 && op2 == 0 && op3 == 1){
+        ALUControlInput = SLT;
+    }
     return ALUControlInput;
 }
+
 void runExecute(){
 // (1) Read from ID/EX
     bool ALUop1     = IDtoEX->GetALUop1();
     bool ALUop2     = IDtoEX->GetALUop2();
+    bool ALUop3     = IDtoEX->GetALUop3();
     bool regDst     = IDtoEX->GetRegDst();
     bool ALUSrc     = IDtoEX->GetALUSrc();
     uint32_t readData1  = IDtoEX->GetReadData1();
@@ -121,17 +139,49 @@ void runExecute(){
     uint8_t dest1   = IDtoEX->GetDest1();
     uint8_t dest2   = IDtoEX->GetDest2();
 
-    uint32_t ALUResult;
+//(1.5) Check for the need for a EX to EX forward
+// check for readdata1
+    if(EXtoMEM->GetRegWrite() &&
+        rs != 0 &&
+        EXtoMEM->GetDestination() == rs){
+        readData1 = EXtoMEM->GetALUResult();
+    }
+    else if(MEMtoWB->GetRegWrite() &&
+            rs != 0 &&
+            MEMtoWB->GetDestination() == rs){
+        // implement memory output --> execute
+        // but for now just ALUResult
+        readData1 = MEMtoWB->GetALUResult();
+    }
+
+// check for readdata2
+    if(EXtoMEM->GetRegWrite() &&
+        dest1 != 0 &&
+        EXtoMEM->GetDestination() == dest1){
+        readData2 = EXtoMEM->GetALUResult();
+    }
+    else if(MEMtoWB->GetRegWrite() &&
+            dest1 != 0 &&
+            MEMtoWB->GetDestination() == dest1){
+        printf("HERE");
+        readData2 = MEMtoWB->GetALUResult();
+    }
 
 // (2) ALU Execution
     if(ALUSrc){
-        performALU(readData1, immediate, ALUControl(funct, ALUop1, ALUop2), shmt);
+        performALU(readData1, immediate, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt);
     }
     else{
-        performALU(readData1, readData2, ALUControl(funct, ALUop1, ALUop2), shmt);
+        performALU(readData1, readData2, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt);
     }
 
 // (3) Write to EX/MEM register
+    if(regDst){
+        EXtoMEM->SetDestination(dest2);
+    }
+    else{
+        EXtoMEM->SetDestination(dest1);
+    }
 
     EXtoMEM->SetRegWrite(IDtoEX->GetRegWrite());
     EXtoMEM->SetMemRead(IDtoEX->GetMemRead());
@@ -140,7 +190,6 @@ void runExecute(){
     EXtoMEM->SetBranch(IDtoEX->GetBranch());
     //EXtoMEM->SetBranchAddress(PC + IDtoEX->GetImmediate() << 2);
     EXtoMEM->SetReadData2(readData2);
-    EXtoMEM->SetDestination(dest2); // hard coded for now
 
     setCurrentInstructionNum(3, getCurrentInstructionNum(2));
 }

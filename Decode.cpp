@@ -11,7 +11,26 @@ static uint32_t Instruction;
 enum OP_IDS
 {
     //R-type opcodes...
-    OP_ZERO = 0
+    OP_ZERO = 0,
+    //I-type opcodes...
+    OP_ADDI = 0x8,
+    OP_ADDIU = 0x9,
+    OP_ANDI = 0xc,
+    OP_BEQ = 0x4,
+    OP_BNE = 0x5,
+    OP_LBU = 0x24,
+    OP_LHU = 0x25,
+    OP_LUI = 0xf,
+    OP_LW = 0x23,
+    OP_ORI = 0xd,
+    OP_SLTI = 0xa,
+    OP_SLTIU = 0xb,
+    OP_SB = 0x28,
+    OP_SH = 0x29,
+    OP_SW = 0x2b,
+    //J-type opcodes...
+    OP_J = 0x2,
+    OP_JAL = 0x3
 };
 enum FUN_IDS
 {
@@ -54,10 +73,21 @@ static uint32_t somethingToSignExtend(uint16_t imm){
     return newMasked;
 }
 
+// helps with supporting the whole WB in first half of the cycle
+// and the ID in the second half of the cycle
+void redoRegisterRead(){
+    uint32_t newRead1, newRead2;
+    newRead1 = generalRegRead(regs, (int)getReadRegister1(Instruction));
+    newRead2 = generalRegRead(regs, (int)getReadRegister2(Instruction));
+    IDtoEX->SetReadData1(newRead1);
+    IDtoEX->SetReadData2(newRead2);
+}
+
 static void writeControlLines(uint8_t opcode, uint8_t func){
     bool RegDst     = 0;
     bool ALUop1     = 0;
     bool ALUop2     = 0;
+    bool ALUop3     = 0;
     bool ALUSrc     = 0;
     bool Branch     = 0;
     bool MemRead    = 0;
@@ -65,20 +95,72 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
     bool RegWrite   = 0;
     bool MemToReg   = 0;
 
-    // R-Type Instructions
-    if(opcode == OP_ZERO){
-        switch(func){
-            case FUN_ADD:
-                RegDst = 1;
-                ALUop1 = 1;
-                RegWrite = 1;
-                break;
-        }
+    /* The Textbook's ALUops were not extensive enough to account for
+        all of the instructions in the MIPS implementation. Thus, I have
+        added a 3rd op line which follow the following:
+                            op1     op2     op3
+        Insrt. R-type       1       0       0
+        LW + SW (add)       0       0       0
+        BE (subtract)       0       1       0
+        (or)                0       1       1
+        (and)               0       0       1
+        (SLT)               1       0       1
+    */
+
+    switch(opcode){
+        case OP_ZERO:
+            RegDst      = 1;
+            ALUop1      = 1;
+            RegWrite    = 1;
+            break;
+        case OP_ADDI:
+        case OP_ADDIU:
+            RegWrite    = 1;
+            ALUSrc      = 1;
+            break;
+        case OP_ANDI:
+            RegWrite    = 1;
+            ALUSrc      = 1;
+            ALUop3      = 1;
+            break;
+        case OP_BEQ:
+        case OP_BNE:
+            // implement this!
+            break;
+        case OP_LBU:
+        case OP_LHU:
+        case OP_LUI:
+        case OP_LW:
+            // implement this!
+            break;
+        case OP_ORI:
+            RegWrite    = 1;
+            ALUSrc      = 1;
+            ALUop2      = 1;
+            ALUop3      = 1;
+            break;
+        case OP_SLTI:
+        case OP_SLTIU:
+            RegWrite    = 1;
+            ALUSrc      = 1;
+            ALUop1      = 1;
+            ALUop3      = 1;
+            break;
+        case OP_SB:
+        case OP_SH:
+        case OP_SW:
+            // implement this!
+            break;
+        case OP_J:
+        case OP_JAL:
+            // implement this!!
+            break;
     }
 
     IDtoEX->SetRegDst(RegDst);
     IDtoEX->SetALUop1(ALUop1);
     IDtoEX->SetALUop2(ALUop2);
+    IDtoEX->SetALUop3(ALUop3);
     IDtoEX->SetALUSrc(ALUSrc);
     IDtoEX->SetBranch(Branch);
     IDtoEX->SetMemRead(MemRead);
@@ -102,12 +184,12 @@ void runDecode(){
     immediateSE     = somethingToSignExtend(
                         getImmediate(Instruction));                  // 0 - 15 --> 32 sign extended
 
-/*  printf("Instruction: %d \n", (int)Instruction);
+    /*printf("Instruction: %d \n", (int)Instruction);
     printf("opcode: %d \n", (int)opcode);
     printf("RS: %d \n", (int)readRegister1);
     printf("RT: %d \n", (int)readRegister2);
     printf("RD: %d \n", (int)dest2);
-*/
+    */
     //(2) Write the values to ID/EX
     IDtoEX->SetPC(IFtoID->GetPC());
     IDtoEX->SetReadData1(generalRegRead(regs, (int)readRegister1));
@@ -117,9 +199,11 @@ void runDecode(){
     IDtoEX->SetDest2(dest2);
     IDtoEX->SetRS(readRegister1);
 
-    // Write the control Flags (hard coded for add)
+    // (3) Write the control Flags
     uint8_t funct = Instruction & 0x3f;
     writeControlLines(opcode, funct);
+
+    // (4) Resolve Branch
 
     // update the instruction position
     setCurrentInstructionNum(2, getCurrentInstructionNum(1));
