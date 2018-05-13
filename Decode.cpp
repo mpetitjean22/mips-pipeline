@@ -204,6 +204,14 @@ void runDecode(){
     writeControlLines(opcode, funct);
 
     // (4) Resolve Branch
+    // (4.1) Check for BEQ instruction
+    if(opcode == OP_BEQ){
+        // check to see if the two are actually equal (needs to branch)
+        if(generalRegRead(regs, (int)readRegister1) == generalRegRead(regs, (int)readRegister2)){
+            // the PC needs to be set to something new
+            IDtoEX->SetBranchAddress((immediateSE << 2)+ IFtoID->GetPC());
+        }
+    }
 
     // update the instruction position
     setCurrentInstructionNum(2, getCurrentInstructionNum(1));
