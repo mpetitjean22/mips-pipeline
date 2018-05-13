@@ -77,13 +77,9 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
 
     // R-Type Instructions
     if(opcode == OP_ZERO){
-        switch(func){
-            case FUN_ADD:
-                RegDst = 1;
-                ALUop1 = 1;
-                RegWrite = 1;
-                break;
-        }
+        RegDst = 1;
+        ALUop1 = 1;
+        RegWrite = 1;
     }
 
     IDtoEX->SetRegDst(RegDst);
