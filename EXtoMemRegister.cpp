@@ -51,6 +51,10 @@ void EXtoMemRegister::SetDestination(uint8_t DesintationVal)
 {
     tempDestination = DesintationVal;
 }
+void EXtoMemRegister::SetInstruction(uint32_t InstructionVal)
+{
+    tempInstruction = InstructionVal;
+}
 
 /* ------------------------------------------------------------------ */
 
@@ -90,6 +94,11 @@ uint8_t EXtoMemRegister::GetDestination() const
 {
     return Destination;
 }
+uint32_t EXtoMemRegister::GetInstruction() const
+{
+    return Instruction;
+}
+
 
 /* ------------------------------------------------------------------ */
 
@@ -104,6 +113,8 @@ void EXtoMemRegister::CommitValues()
     ALUResult = tempALUResult;
     ReadData2 = tempReadData2;
     Destination = tempDestination;
+    Instruction = tempInstruction;
+
 }
 
 /* ------------------------------------------------------------------ */

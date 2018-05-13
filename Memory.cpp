@@ -10,7 +10,6 @@ void runMemory(){
 //    MEMtoWB->SetMemoryOutput = something!!
     MEMtoWB->SetALUResult(EXtoMEM->GetALUResult());
     MEMtoWB->SetDestination(EXtoMEM->GetDestination());
-
-    setCurrentInstructionNum(4, getCurrentInstructionNum(3));
-
+    MEMtoWB->SetInstruction(EXtoMEm->GetInstruction());
+    
 }

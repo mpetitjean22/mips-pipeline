@@ -6,5 +6,6 @@
 
 void runInstructionFetch();
 void IF_pleaseBranch();
+void IF_setPCWrite(); 
 
 #endif

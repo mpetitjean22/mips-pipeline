@@ -7,8 +7,9 @@ EXtoMemRegister* EXtoMEM;
 IFtoIDRegister* IFtoID;
 Cache *ICache;
 Cache *DCache;
-int cycleNum;
 
+static int cycleNum = 0;
+static uint32_t WriteBackInstruction;
 Register_T regs;
 
 int main(void){
@@ -40,11 +41,6 @@ int main(void){
         IDtoEX->CommitValues();
         EXtoMEM->CommitValues();
         MEMtoWB->CommitValues();
-
-        cycleNum++;
-        updateCurrentInstructionNum();
-        printf("Cycle: %d \n", cycleNum);
-        printCurrent();
     }
     convertToRegInfo(regs, &reginfo);
     dumpRegisterState(reginfo);
@@ -56,31 +52,19 @@ int main(void){
 }
 // helps us keep track of which PC (instruction) is in
 // each stage
-int Current[5] = {-1, -1, -1, -1, -1};
-int tempCurrent[5] = {-1, -1, -1, -1, -1};
-char words[5][4] = {"IF", "ID", "EX", "MEM", "WB"};
 
-int getCurrentInstructionNum(int Stage){
-    return Current[Stage];
+void setWriteBackInstruction(uint32_t InstructionVal){
+    WriteBackInstruction = InstructionVal;
 }
-void setCurrentInstructionNum(int Stage, uint32_t PCVal){
-    tempCurrent[Stage] = (int)PCVal;
+// should be called after the values to the stage registers have been commited
+static void makePipeState(PipeState *state) {
+    state->cycle = cycleNum;
+    state->ifInstr = IFtoID->GetInstruction();
+    state->idInstr = IDtoEX->GetInstructionForDump();
+    state->exInstr = EXtoMEM->GetInstructionForDump();
+    state->memInstr = MEMtoWB->GetInstructionForDump();
+    state->wbInstr = WriteBackInstruction;
 }
-void updateCurrentInstructionNum(){
-    int i;
-    for(i=0; i<5; i++){
-        Current[i] = tempCurrent[i];
-        tempCurrent[i] = -1;
-    }
-}
-void printCurrent(){
-    int i;
-    for(i=0; i<5; i++){
-        printf("%s: %d \n", words[i],(int)Current[i]);
-    }
-    printf("\n");
-}
-
 int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *mainMem)
 {
     ICache = new Cache(icConfig, mainMem);

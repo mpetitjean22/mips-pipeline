@@ -131,7 +131,7 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
         case OP_LHU:
         case OP_LUI:
         case OP_LW:
-            // implement this!
+
             break;
         case OP_ORI:
             RegWrite    = 1;
@@ -208,15 +208,15 @@ void runDecode(){
     if(opcode == OP_BEQ){
         // check to see if the two are actually equal (needs to branch)
         if(generalRegRead(regs, (int)readRegister1) == generalRegRead(regs, (int)readRegister2)){
-            IF_pleaseBranch();
+            IF_pleaseBranch((int32_t)(IFtoID->GetPC() + (immediateSE<<2)));
         }
     }
     else if(opcode == OP_BNE){
         if(generalRegRead(regs, (int)readRegister1) != generalRegRead(regs, (int)readRegister2)){
-            IF_pleaseBranch();
+            IF_pleaseBranch((int32_t)(IFtoID->GetPC() + (immediateSE<<2)));
         }
     }
 
     // update the instruction position
-    setCurrentInstructionNum(2, getCurrentInstructionNum(1));
+    IDtoEX->SetInstruction(IFtoID->GetInstruction()); 
 }

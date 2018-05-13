@@ -16,8 +16,7 @@ public:
     void SetMemWrite(bool MemWriteVal);
     void SetRegWrite(bool RegWriteVal);
     void SetMemToReg(bool MemToRegVal);
-    
-    void SetBranchAddress(uint32_t BranchAddressVal);
+
     void SetPC(uint32_t PCVal);
     void SetReadData1(uint32_t ReadData1Val);
     void SetReadData2(uint32_t ReadData2Val);
@@ -25,6 +24,7 @@ public:
     void SetDest1(uint8_t Dest1Val);
     void SetDest2(uint8_t Dest2Val);
     void SetRS(uint8_t RSVal);
+    void SetInstructionForDump(uint32_t InstructionVal);
 
     bool GetRegDst() const;
     bool GetALUop1() const;
@@ -43,7 +43,7 @@ public:
     uint8_t GetDest1() const;
     uint8_t GetDest2() const;
     uint8_t GetRS() const;
-    uint32_t GetBranchAdress() const;
+    uint32_t GetInstructionForDump() const;
 
     void CommitValues();
 
@@ -58,7 +58,6 @@ private:
     bool MemWrite;
     bool RegWrite;
     bool MemToReg;
-    uint32_t BranchAddress;
     uint32_t PC;
     uint32_t ReadData1;
     uint32_t ReadData2;
@@ -66,6 +65,7 @@ private:
     uint8_t Dest1;
     uint8_t Dest2;
     uint8_t RS;
+    uint32_t Instruction;
 
     bool tempRegDst;
     bool tempALUop1;
@@ -80,11 +80,11 @@ private:
     uint32_t tempPC;
     uint32_t tempReadData1;
     uint32_t tempReadData2;
-    uint32_t tempBranchAddress;
     uint32_t tempImmediateValue;
     uint8_t tempDest1;
     uint8_t tempDest2;
     uint8_t tempRS;
+    uint32_t tempInstruction;
 };
 
 #endif

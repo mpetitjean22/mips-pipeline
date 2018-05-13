@@ -8,7 +8,7 @@
     (5) ALUResult --> 32
 */
 MemToWBRegister::MemToWBRegister(){
-    
+
 }
 void MemToWBRegister::SetRegWrite(bool RegWriteVal)
 {
@@ -30,7 +30,10 @@ void MemToWBRegister::SetDestination(uint8_t DesintationVal)
 {
     tempDestination = DesintationVal;
 }
-
+void MemToWBRegister::SetInstruction(uint32_t InstructionVal)
+{
+    tempInstruction = InstructionVal;
+}
 /* ------------------------------------------------------------------ */
 
 bool MemToWBRegister::GetRegWrite() const
@@ -53,6 +56,11 @@ uint8_t MemToWBRegister::GetDestination() const
 {
     return Destination;
 }
+uint32_t MemToWBRegister::GetInstruction() const
+{
+    return Instruction;
+}
+
 
 /* ------------------------------------------------------------------ */
 
@@ -63,6 +71,7 @@ void MemToWBRegister::CommitValues()
     ALUResult = tempALUResult;
     MemoryOutput = tempMemoryOutput;
     Destination = tempDestination;
+    Instruction = tempInstruction;
 }
 
 /* ------------------------------------------------------------------ */

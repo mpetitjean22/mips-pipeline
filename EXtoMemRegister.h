@@ -15,6 +15,7 @@ public:
     void SetALUResult(uint32_t ALUResultVal);
     void SetReadData2(uint32_t ReadData2Val);
     void SetDestination(uint8_t DesintationVal);
+    void SetInstructionForDump(uint32_t InstructionVal);
 
     bool GetRegWrite() const;
     bool GetMemRead() const;
@@ -25,6 +26,8 @@ public:
     uint32_t GetALUResult() const;
     uint32_t GetReadData2() const;
     uint8_t GetDestination() const;
+    uint32_t GetInstructionForDump() const;
+
     void CommitValues();
 
 private:
@@ -37,16 +40,18 @@ private:
     uint32_t ALUResult;
     uint32_t ReadData2;
     uint8_t Destination;
+    uint32_t Instruction;
+
     bool tempRegWrite;
     bool tempMemRead;
     bool tempMemWrite;
     bool tempMemToReg;
     bool tempBranch;
     bool tempZero;
-
     uint32_t tempALUResult;
     uint32_t tempReadData2;
     uint8_t tempDestination;
+    uint32_t tempInstruction;
 };
 
 #endif

@@ -9,8 +9,10 @@ public:
     IFtoIDRegister();
     void SetPC(uint32_t PCVal);
     void SetInstruction(uint32_t InstructionVal);
+
     uint32_t GetPC() const;
     uint32_t GetInstruction() const;
+    
     void CommitValues();
 
 private:

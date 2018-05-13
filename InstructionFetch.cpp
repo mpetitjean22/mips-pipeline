@@ -1,57 +1,44 @@
 #include "InstructionFetch.h"
 #include "sim.h"
+#include "Cache.h"
 
+enum {UNKNOWN = 0xdeefdeef};
+
+extern Cache* ICache;
 extern IFtoIDRegister* IFtoID;
 extern IDtoExRegister* IDtoEX;
 
 static uint32_t Instruction;
 static uint32_t PC = 0;
-bool pleaseBranch = 0;
+static bool pleaseBranch = false;
+static bool pcWrite = false;
+static int32_t branchAddress;
 
-/* my imaginary instruction cache */
-static uint32_t getSomething(uint32_t PCVal){
-    if(PCVal == 0){
-        return (uint32_t)0x1285020;
-    }
-    else if(PCVal == 4){
-        return (uint32_t)0x18B6820;
-    }
-    else if(PCVal == 8){
-        return (uint32_t)0x1AA7020;
-    }
-    else if(PCVal == 12){
-        return (uint32_t)0x1CA7822;
-    }
+void IF_pleaseBranch(int32_t  branchAddressVal){
+    pleaseBranch = true;
+    branchAddress = branchAddressVal;
+}
+void IF_setPCWrite(bool pcWriteVal){
+    pcWrite = pcWriteVal;
+}
 
-}
-void IF_pleaseBranch(){
-    pleaseBranch = 1;
-}
 void runInstructionFetch(){
+    // ID telling us to branch
+    if (pleaseBranch) {
+        PC = branchAddress;
+        pleaseBranch = false;
+    } else if (pcWrite) {
+        PC += 4
+    }
 
     /* grab + write the instruction address*/
-    Instruction = getSomething(PC);
+    int ret = ICache.Read(PC, Instruction, WORD_SIZE);
+    if (ret > 0) {
+
+    }
     IFtoID->SetInstruction(Instruction);
 
-    /* Tell the next stage which instruction num its working on */
-    setCurrentInstructionNum(1, PC/4);
-
     /* Update + write the new PC */
-    PC = PC + 4;
     IFtoID->SetPC(PC);
-    setCurrentInstructionNum(0, PC/4);
 
-    // ID telling us to branch
-    if(pleaseBranch == 1){
-        PC = IDtoEX->GetBranchAdress();
-
-        Instruction = getSomething(PC);
-        IFtoID->SetInstruction(Instruction);
-
-        setCurrentInstructionNum(1,PC/4);
-
-        PC = PC + 4;
-        IFtoID->SetPC(PC);
-        setCurrentInstructionNum(0, PC/4);
-    }
 }
