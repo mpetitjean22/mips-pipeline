@@ -72,6 +72,10 @@ void IDtoExRegister::SetRS(uint8_t RSVal)
 {
     tempRS = RSVal;
 }
+void IDtoExRegister::SetBranchAddress(uint32_t BranchAddressVal)
+{
+    tempBranchAddress = BranchAddressVal;
+}
 
 /* ------------------------------------------------------------------ */
 
@@ -143,6 +147,10 @@ uint8_t IDtoExRegister::GetRS() const
 {
     return RS;
 }
+uint32_t IDtoExRegister::GetBranchAdress() const
+{
+    return BranchAddress;
+}
 /* ------------------------------------------------------------------ */
 
 void IDtoExRegister::CommitValues()
@@ -163,6 +171,7 @@ void IDtoExRegister::CommitValues()
     Dest1 = tempDest1;
     Dest2 = tempDest2;
     RS = tempRS;
+    BranchAddress = tempBranchAddress;
 }
 
 /* ------------------------------------------------------------------ */

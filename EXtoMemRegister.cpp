@@ -13,7 +13,7 @@
     (10) Destination --> 5
 */
 EXtoMemRegister::EXtoMemRegister(){
-    
+
 }
 void EXtoMemRegister::SetRegWrite(bool RegWriteVal)
 {
@@ -42,10 +42,6 @@ void EXtoMemRegister::SetZero(bool ZeroVal)
 void EXtoMemRegister::SetALUResult(uint32_t ALUResultVal)
 {
     tempALUResult = ALUResultVal;
-}
-void EXtoMemRegister::SetBranchAddress(uint32_t BranchAddressVal)
-{
-    tempBranchAddress = BranchAddressVal;
 }
 void EXtoMemRegister::SetReadData2(uint32_t ReadData2Val)
 {
@@ -86,10 +82,6 @@ uint32_t EXtoMemRegister::GetALUResult() const
 {
     return ALUResult;
 }
-uint32_t EXtoMemRegister::GetBranchAdress() const
-{
-    return BranchAddress;
-}
 uint32_t EXtoMemRegister::GetReadData2() const
 {
     return ReadData2;
@@ -110,7 +102,6 @@ void EXtoMemRegister::CommitValues()
     Branch = tempBranch;
     Zero = tempZero;
     ALUResult = tempALUResult;
-    BranchAddress = tempBranchAddress;
     ReadData2 = tempReadData2;
     Destination = tempDestination;
 }
