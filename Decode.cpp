@@ -54,6 +54,16 @@ static uint32_t somethingToSignExtend(uint16_t imm){
     return newMasked;
 }
 
+// helps with supporting the whole WB in first half of the cycle
+// and the ID in the second half of the cycle
+void redoRegisterRead(){
+    uint32_t newRead1, newRead2;
+    newRead1 = generalRegRead(regs, (int)getReadRegister1(Instruction));
+    newRead2 = generalRegRead(regs, (int)getReadRegister2(Instruction));
+    IDtoEX->SetReadData1(newRead1);
+    IDtoEX->SetReadData2(newRead2);
+}
+
 static void writeControlLines(uint8_t opcode, uint8_t func){
     bool RegDst     = 0;
     bool ALUop1     = 0;
@@ -102,12 +112,12 @@ void runDecode(){
     immediateSE     = somethingToSignExtend(
                         getImmediate(Instruction));                  // 0 - 15 --> 32 sign extended
 
-/*  printf("Instruction: %d \n", (int)Instruction);
+    /*printf("Instruction: %d \n", (int)Instruction);
     printf("opcode: %d \n", (int)opcode);
     printf("RS: %d \n", (int)readRegister1);
     printf("RT: %d \n", (int)readRegister2);
     printf("RD: %d \n", (int)dest2);
-*/
+    */
     //(2) Write the values to ID/EX
     IDtoEX->SetPC(IFtoID->GetPC());
     IDtoEX->SetReadData1(generalRegRead(regs, (int)readRegister1));

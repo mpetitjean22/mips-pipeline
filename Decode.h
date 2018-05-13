@@ -6,5 +6,6 @@
 #include <stdio.h>
 
 void runDecode();
+void redoRegisterRead(); 
 
 #endif
