@@ -2,8 +2,11 @@
 #include "sim.h"
 
 extern IFtoIDRegister* IFtoID;
+extern IDtoExRegister* IDtoEX;
+
 static uint32_t Instruction;
 static uint32_t PC = 0;
+bool pleaseBranch = 0;
 
 /* my imaginary instruction cache */
 static uint32_t getSomething(uint32_t PCVal){
@@ -21,7 +24,9 @@ static uint32_t getSomething(uint32_t PCVal){
     }
 
 }
-
+void IF_pleaseBranch(){
+    pleaseBranch = 1;
+}
 void runInstructionFetch(){
 
     /* grab + write the instruction address*/
@@ -35,4 +40,18 @@ void runInstructionFetch(){
     PC = PC + 4;
     IFtoID->SetPC(PC);
     setCurrentInstructionNum(0, PC/4);
+
+    // ID telling us to branch
+    if(pleaseBranch == 1){
+        PC = IDtoEX->GetBranchAdress();
+
+        Instruction = getSomething(PC);
+        IFtoID->SetInstruction(Instruction);
+
+        setCurrentInstructionNum(1,PC/4);
+
+        PC = PC + 4;
+        IFtoID->SetPC(PC);
+        setCurrentInstructionNum(0, PC/4);
+    }
 }

@@ -5,5 +5,6 @@
 #include "sim.h"
 
 void runInstructionFetch();
+void IF_pleaseBranch();
 
 #endif

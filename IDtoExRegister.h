@@ -16,8 +16,8 @@ public:
     void SetMemWrite(bool MemWriteVal);
     void SetRegWrite(bool RegWriteVal);
     void SetMemToReg(bool MemToRegVal);
+    
     void SetBranchAddress(uint32_t BranchAddressVal);
-
     void SetPC(uint32_t PCVal);
     void SetReadData1(uint32_t ReadData1Val);
     void SetReadData2(uint32_t ReadData2Val);

@@ -208,8 +208,12 @@ void runDecode(){
     if(opcode == OP_BEQ){
         // check to see if the two are actually equal (needs to branch)
         if(generalRegRead(regs, (int)readRegister1) == generalRegRead(regs, (int)readRegister2)){
-            // the PC needs to be set to something new
-            IDtoEX->SetBranchAddress((immediateSE << 2)+ IFtoID->GetPC());
+            IF_pleaseBranch();
+        }
+    }
+    else if(opcode == OP_BNE){
+        if(generalRegRead(regs, (int)readRegister1) != generalRegRead(regs, (int)readRegister2)){
+            IF_pleaseBranch();
         }
     }
 
