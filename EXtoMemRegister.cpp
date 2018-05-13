@@ -51,7 +51,7 @@ void EXtoMemRegister::SetDestination(uint8_t DesintationVal)
 {
     tempDestination = DesintationVal;
 }
-void EXtoMemRegister::SetInstruction(uint32_t InstructionVal)
+void EXtoMemRegister::SetInstructionForDump(uint32_t InstructionVal)
 {
     tempInstruction = InstructionVal;
 }
@@ -94,7 +94,7 @@ uint8_t EXtoMemRegister::GetDestination() const
 {
     return Destination;
 }
-uint32_t EXtoMemRegister::GetInstruction() const
+uint32_t EXtoMemRegister::GetInstructionForDump() const
 {
     return Instruction;
 }

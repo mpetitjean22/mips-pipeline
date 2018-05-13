@@ -1,3 +1,6 @@
+#ifndef CACHECONFIG_H
+#define CACHECONFIG_H
+
 #include <inttypes.h>
 
 enum CacheType
@@ -17,3 +20,5 @@ struct CacheConfig
     //Miss latency in cycles.
     uint32_t missLatency;
 };
+
+#endif

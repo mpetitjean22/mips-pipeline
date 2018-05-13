@@ -218,5 +218,6 @@ void runDecode(){
     }
 
     // update the instruction position
-    IDtoEX->SetInstruction(IFtoID->GetInstruction()); 
+    IDtoEX->SetInstructionForDump(IFtoID->GetInstruction());
+    setInstruction(1,IFtoID->GetInstruction());
 }

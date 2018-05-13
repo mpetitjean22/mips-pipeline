@@ -5,7 +5,6 @@
 #include "sim.h"
 
 void runInstructionFetch();
-void IF_pleaseBranch();
-void IF_setPCWrite(); 
-
+void IF_pleaseBranch(int32_t  branchAddressVal);
+void IF_setPCWrite(bool pcWriteVal);
 #endif

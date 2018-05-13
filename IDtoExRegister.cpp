@@ -72,7 +72,7 @@ void IDtoExRegister::SetRS(uint8_t RSVal)
 {
     tempRS = RSVal;
 }
-void IDtoExRegister::SetInstruction(uint32_t InstructionVal)
+void IDtoExRegister::SetInstructionForDump(uint32_t InstructionVal)
 {
     tempInstruction = InstructionVal;
 }
@@ -147,7 +147,7 @@ uint8_t IDtoExRegister::GetRS() const
 {
     return RS;
 }
-uint32_t IDtoExRegister::GetInstruction() const
+uint32_t IDtoExRegister::GetInstructionForDump() const
 {
     return Instruction;
 }

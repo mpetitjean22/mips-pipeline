@@ -1,5 +1,6 @@
 #include "sim.h"
 #include "Cache.h"
+#include "DriverFunctions.h"
 
 IDtoExRegister* IDtoEX;
 MemToWBRegister* MEMtoWB;
@@ -9,7 +10,7 @@ Cache *ICache;
 Cache *DCache;
 
 static int cycleNum = 0;
-static uint32_t WriteBackInstruction;
+static uint32_t stageInstruction[5] = {0,0,0,0,0};
 Register_T regs;
 
 int main(void){
@@ -21,6 +22,16 @@ int main(void){
     IFtoID = new IFtoIDRegister;
     RegisterInfo reginfo;
     regs = newReg();
+
+    MemoryStore *mem = createMemoryStore();
+    CacheConfig icConfig;
+    icConfig.cacheSize = 1024;
+    icConfig.blockSize = 64;
+    icConfig.type = DIRECT_MAPPED;
+    icConfig.missLatency = 5;
+    CacheConfig dcConfig = icConfig;
+    ICache = new Cache(icConfig, mem);
+    DCache = new Cache(dcConfig, mem);
 
     generalRegWrite(regs, 8, (uint32_t)11);
     generalRegWrite(regs, 9, (uint32_t)20);
@@ -52,18 +63,18 @@ int main(void){
 }
 // helps us keep track of which PC (instruction) is in
 // each stage
-
-void setWriteBackInstruction(uint32_t InstructionVal){
-    WriteBackInstruction = InstructionVal;
+void setInstruction(int stage, uint32_t InstructionVal){
+    stageInstruction[stage] = InstructionVal;
 }
+
 // should be called after the values to the stage registers have been commited
 static void makePipeState(PipeState *state) {
     state->cycle = cycleNum;
-    state->ifInstr = IFtoID->GetInstruction();
-    state->idInstr = IDtoEX->GetInstructionForDump();
-    state->exInstr = EXtoMEM->GetInstructionForDump();
-    state->memInstr = MEMtoWB->GetInstructionForDump();
-    state->wbInstr = WriteBackInstruction;
+    state->ifInstr = stageInstruction[0];
+    state->idInstr = stageInstruction[1];
+    state->exInstr = stageInstruction[2];
+    state->memInstr = stageInstruction[3];
+    state->wbInstr = stageInstruction[4];
 }
 int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *mainMem)
 {
@@ -94,13 +105,13 @@ int runCycles(uint32_t cycles)
 
         // need to check for halt instruction in WB and return 1 if it occurs
         cycleNum++;
-
-        updateCurrentInstructionNum();
     }
 
     // we should be using dumppiplinestate instead
     printf("Cycle: %d \n", cycleNum);
-    printCurrent();
+    PipeState state;
+    makePipeState(&state);
+    dumpPipeState(state);
 
     return 0;
 }

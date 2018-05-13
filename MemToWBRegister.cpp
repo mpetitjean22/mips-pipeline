@@ -30,7 +30,7 @@ void MemToWBRegister::SetDestination(uint8_t DesintationVal)
 {
     tempDestination = DesintationVal;
 }
-void MemToWBRegister::SetInstruction(uint32_t InstructionVal)
+void MemToWBRegister::SetInstructionForDump(uint32_t InstructionVal)
 {
     tempInstruction = InstructionVal;
 }
@@ -56,7 +56,7 @@ uint8_t MemToWBRegister::GetDestination() const
 {
     return Destination;
 }
-uint32_t MemToWBRegister::GetInstruction() const
+uint32_t MemToWBRegister::GetInstructionForDump() const
 {
     return Instruction;
 }

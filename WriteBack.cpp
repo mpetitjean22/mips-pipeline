@@ -9,5 +9,6 @@ void runWriteBack()
     if (MEMtoWB->GetRegWrite()) {
         generalRegWrite(regs, (int)MEMtoWB->GetDestination(), MEMtoWB->GetALUResult());
     }
+    setInstruction(4, MEMtoWB->GetInstructionForDump()); 
     redoRegisterRead();
 }

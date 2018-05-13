@@ -28,15 +28,18 @@ void runInstructionFetch(){
         PC = branchAddress;
         pleaseBranch = false;
     } else if (pcWrite) {
-        PC += 4
+        PC += 4;
     }
 
     /* grab + write the instruction address*/
-    int ret = ICache.Read(PC, Instruction, WORD_SIZE);
+    int ret = ICache->Read(PC, Instruction, WORD_SIZE);
     if (ret > 0) {
-        IFtoID->
+        // TODO: A MISS OCCURED MUST CAUSE STALL
+        // OUR PLAN WAS TO MAKE THIS FUNC RETURN int INSTEAD
     }
+
     IFtoID->SetInstruction(Instruction);
+    setInstruction(0, Instruction);
 
     /* Update + write the new PC */
     IFtoID->SetPC(PC);

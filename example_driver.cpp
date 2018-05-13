@@ -2,10 +2,10 @@
 #include <iomanip>
 #include <fstream>
 #include <errno.h>
-#include "../src/MemoryStore.h"
-#include "../src/RegisterInfo.h"
-#include "../src/EndianHelpers.h"
-#include "../src/DriverFunctions.h"
+#include "MemoryStore.h"
+#include "RegisterInfo.h"
+#include "EndianHelpers.h"
+#include "DriverFunctions.h"
 
 using namespace std;
 

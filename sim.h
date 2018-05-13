@@ -14,8 +14,5 @@
 #include "WriteBack.h"
 #include "register.h"
 
-int getCurrentInstructionNum(int Stage);
-void setCurrentInstructionNum(int Stage, uint32_t PCVal);
-void updateCurrentInstructionNum();
-void printCurrent();
+void setInstruction(int stage, uint32_t InstructionVal);
 #endif
