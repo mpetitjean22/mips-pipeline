@@ -1,21 +1,6 @@
 #include "IDtoExRegister.h"
 /* IFtoEx Register */
-/*
-(1) ALUop1
-(2) ALUop --> op1 and op2
-(3) ALUSrc
-(4) Branch
-(5) MemRead
-(6) MemWrite
-(7) RegWrite
-(8) MemToReg
-(9) PC --> 32 bit
-(10) ReadData1 --> 32
-(11) ReadData2 --> 32
-(12) ImmediateValue  --> 32
-(13) Dest1 --> 5
-(14) Dest2 --> 5
-*/
+
 IDtoExRegister::IDtoExRegister(){
 
 }
@@ -30,6 +15,10 @@ void IDtoExRegister::SetALUop1(bool ALUop1Val)
 void IDtoExRegister::SetALUop2(bool ALUop2Val)
 {
     tempALUop2 = ALUop2Val;
+}
+void IDtoExRegister::SetALUop3(bool ALUop3Val)
+{
+    tempALUop3 = ALUop3Val;
 }
 void IDtoExRegister::SetALUSrc(bool ALUSrcVal)
 {
@@ -98,6 +87,10 @@ bool IDtoExRegister::GetALUop2() const
 {
     return ALUop2;
 }
+bool IDtoExRegister::GetALUop3() const
+{
+    return ALUop3;
+}
 bool IDtoExRegister::GetALUSrc() const
 {
     return ALUSrc;
@@ -162,7 +155,7 @@ void IDtoExRegister::CommitValues()
     MemRead = tempMemRead;
     MemWrite = tempMemWrite;
     MemToReg = tempMemToReg;
-    RegWrite = tempRegWrite; 
+    RegWrite = tempRegWrite;
     PC = tempPC;
     ReadData1 = tempReadData1;
     ReadData2 = tempReadData2;

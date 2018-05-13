@@ -9,6 +9,7 @@ public:
     void SetRegDst(bool RegDestVal);
     void SetALUop1(bool ALUTop1Val);
     void SetALUop2(bool ALUTop2Val);
+    void SetALUop3(bool ALUTop3Val);
     void SetALUSrc(bool ALUSrcVal);
     void SetBranch(bool BranchVal);
     void SetMemRead(bool MemReadVal);
@@ -27,6 +28,7 @@ public:
     bool GetRegDst() const;
     bool GetALUop1() const;
     bool GetALUop2() const;
+    bool GetALUop3() const;
     bool GetALUSrc() const;
     bool GetBranch() const;
     bool GetMemRead() const;
@@ -47,6 +49,7 @@ private:
     bool RegDst;
     bool ALUop1;
     bool ALUop2;
+    bool ALUop3;
     bool ALUSrc;
     bool Branch;
     bool MemRead;
@@ -64,6 +67,7 @@ private:
     bool tempRegDst;
     bool tempALUop1;
     bool tempALUop2;
+    bool tempALUop3;
     bool tempALUSrc;
     bool tempBranch;
     bool tempMemRead;

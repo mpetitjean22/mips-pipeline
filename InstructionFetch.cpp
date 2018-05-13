@@ -17,7 +17,7 @@ static uint32_t getSomething(uint32_t PCVal){
         return (uint32_t)0x1AA7020;
     }
     else if(PCVal == 12){
-        return (uint32_t)0x1CA7820;
+        return (uint32_t)0x1CA7822;
     }
 
 }
