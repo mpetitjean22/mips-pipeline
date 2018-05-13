@@ -34,7 +34,7 @@ void runInstructionFetch(){
     /* grab + write the instruction address*/
     int ret = ICache.Read(PC, Instruction, WORD_SIZE);
     if (ret > 0) {
-
+        IFtoID->
     }
     IFtoID->SetInstruction(Instruction);
 
