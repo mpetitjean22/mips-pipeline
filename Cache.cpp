@@ -43,6 +43,7 @@ Cache::Cache(CacheConfig &config, MemoryStore *memory) {
     way1 = new cache_block[sets];
     for (int i = 0; i < sets; i++) {
         way1[i].valid = false;
+        way1[i].dirty = false;
         way1[i].block = new uint32_t[wordsPerBlock];
     }
 
@@ -51,6 +52,7 @@ Cache::Cache(CacheConfig &config, MemoryStore *memory) {
         lru = new bool[sets];
         for (int i = 0; i < sets; i++) {
             way2[i].valid = false;
+            way2[i].dirty = false;
             way2[i].block = new uint32_t[wordsPerBlock];
             lru[i] = true;
         }
@@ -97,6 +99,7 @@ uint32_t Cache::Encode(uint32_t tag, uint32_t index, uint32_t offset) const {
 void Cache::Evict(cache_block & target, uint32_t index) {
     uint32_t address = Encode(target.tag, index, 0);
     int ret;
+    printf("evict: %d\n", target.dirty);
     if (target.dirty && target.valid) {
         for (int i = 0; i < wordsPerBlock; i++) {
             ret = mem->setMemValue(address + i * 4, target.block[i], WORD_SIZE);
@@ -119,7 +122,9 @@ void Cache::Insert(cache_block & target, uint32_t tag, uint32_t index) {
             exit(EXIT_FAILURE);
         }
     }
+    target.valid = true;
     target.dirty = false;
+    target.tag = tag;
 }
 
 uint32_t Cache::SizeMask(uint32_t value, MemEntrySize size) const {
@@ -153,7 +158,8 @@ void Cache::AugmentPortion(uint32_t & current, uint32_t newv, MemEntrySize size)
 int Cache::Read(uint32_t address, uint32_t & value, MemEntrySize size) {
     uint32_t tag, index, offset;
     Decode(address, tag, index, offset);
-    cache_block from1 = way1[index];
+    printf("tag: %u\tindex: %u\toffset: %u\n", tag, index, offset);
+    cache_block & from1 = way1[index];
     if (from1.valid && from1.tag == tag) {
         hits++;
         // "assume that your caches will never need to serve unaligned accesses"
@@ -163,7 +169,7 @@ int Cache::Read(uint32_t address, uint32_t & value, MemEntrySize size) {
         return 0;
     }
     if (type == TWO_WAY_SET_ASSOC) {
-        cache_block from2 = way2[index];
+        cache_block & from2 = way2[index];
         if (from2.valid && from2.tag == tag) {
             hits++;
             // "assume that your caches will never need to serve unaligned accesses"
@@ -174,24 +180,23 @@ int Cache::Read(uint32_t address, uint32_t & value, MemEntrySize size) {
     }
     misses++;
 
-    cache_block toEvict;
+    cache_block *toEvict;
     if (TWO_WAY_SET_ASSOC) {
         if (lru[index]) {
-            toEvict = way1[index];
+            toEvict = &way1[index];
             lru[index] = false;
         }
         else {
-            toEvict = way2[index];
+            toEvict = &way2[index];
             lru[index] = true;
         }
     } else {
-        toEvict = way1[index];
+        toEvict = &way1[index];
     }
     // modifying cache now (prior to the end of the miss penalty) is fine b/c
     // the cache wont be accessed or modified until the penalty is up
-    Evict(toEvict, index);
-    Insert(toEvict, tag, index);
-    toEvict.valid = true;
+    Evict(*toEvict, index);
+    Insert(*toEvict, tag, index);
     int ret = mem->getMemValue(address, value, size);
     if (ret) {
         fprintf(stderr, "Could not access %u", address);
@@ -204,7 +209,8 @@ int Cache::Read(uint32_t address, uint32_t & value, MemEntrySize size) {
 int Cache::Write(uint32_t address, uint32_t value, MemEntrySize size) {
     uint32_t tag, index, offset;
     Decode(address, tag, index, offset);
-    cache_block from1 = way1[index];
+    printf("tag: %u\tindex: %u\toffset: %u\n", tag, index, offset);
+    cache_block & from1 = way1[index];
     if (from1.valid && from1.tag == tag) {
         hits++;
         // "assume that your caches will never need to serve unaligned accesses"
@@ -215,7 +221,7 @@ int Cache::Write(uint32_t address, uint32_t value, MemEntrySize size) {
         return 0;
     }
     if (type == TWO_WAY_SET_ASSOC) {
-        cache_block from2 = way2[index];
+        cache_block & from2 = way2[index];
         if (from2.valid && from2.tag == tag) {
             hits++;
             // "assume that your caches will never need to serve unaligned accesses"
@@ -227,25 +233,25 @@ int Cache::Write(uint32_t address, uint32_t value, MemEntrySize size) {
     }
     misses++;
 
-    cache_block toEvict;
+    cache_block *toEvict;
     if (TWO_WAY_SET_ASSOC) {
         if (lru[index]) {
-            toEvict = way1[index];
+            toEvict = &way1[index];
             lru[index] = false;
         }
         else {
-            toEvict = way2[index];
+            toEvict = &way2[index];
             lru[index] = true;
         }
     } else {
-        toEvict = way1[index];
+        toEvict = &way1[index];
     }
     // modifying cache now (prior to the end of the miss penalty) is fine b/c
     // the cache wont be accessed or modified until the penalty is up
-    Evict(toEvict, index);
-    Insert(toEvict, tag, index);
-    toEvict.valid = true;
-    AugmentPortion(toEvict.block[offset >> 2], value, size);
+    Evict(*toEvict, index);
+    Insert(*toEvict, tag, index);
+    AugmentPortion(toEvict->block[offset >> 2], value, size);
+    toEvict->dirty = true;
     latencyLeft = missLatency;
     return missLatency;
 }

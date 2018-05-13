@@ -31,14 +31,9 @@ int main(void){
     mem->setMemValue(0x34, 0x11, WORD_SIZE);
     mem->printMemory(0x0, 0x38);
     Cache cash(config, mem);
-    uint32_t val;
-    mem->getMemValue(0x0, val, WORD_SIZE);
-    printf("0:%u\n", val);
     uint32_t one = 0, two = 0, three = 0, four = 0;
     printf("%d\n", cash.Read(0, one, WORD_SIZE));
     printf("%u\t%u\t%u\t%u\n", one, two, three, four);
-    mem->getMemValue(0x0, val, WORD_SIZE);
-    printf("0:%u\n", val);
     printf("%d\n", cash.Read(8, two, WORD_SIZE));
     printf("%u\t%u\t%u\t%u\n", one, two, three, four);
     printf("%d\n", cash.Read(20, three, WORD_SIZE));
