@@ -91,15 +91,6 @@ int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *m
     regs = newReg();
     stalled = false;
 
-    // temporary!
-    generalRegWrite(regs, 8, (uint32_t)11);
-    generalRegWrite(regs, 9, (uint32_t)20);
-    generalRegWrite(regs, 10, (uint32_t)30);
-    generalRegWrite(regs, 11, (uint32_t)40);
-    generalRegWrite(regs, 12, (uint32_t)50);
-    generalRegWrite(regs, 13, (uint32_t)60);
-    generalRegWrite(regs, 14, (uint32_t)70);
-
     cycleNum = 0;
     return 0; // unused
 }
