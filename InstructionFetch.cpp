@@ -22,7 +22,7 @@ void IF_setPCWrite(bool pcWriteVal){
     pcWrite = pcWriteVal;
 }
 
-void runInstructionFetch(){
+int runInstructionFetch(){
     // ID telling us to branch
     if (pleaseBranch) {
         PC = branchAddress;
@@ -30,20 +30,20 @@ void runInstructionFetch(){
     } else if (pcWrite) {
         PC += 4;
         // ikik stalls but lemme test everything else for now
-        IF_setPCWrite(false); 
+        IF_setPCWrite(false);
     }
 
     /* grab + write the instruction address*/
     int ret = ICache->Read(PC, Instruction, WORD_SIZE);
     if (ret > 0) {
-        // TODO: A MISS OCCURED MUST CAUSE STALL
-        // OUR PLAN WAS TO MAKE THIS FUNC RETURN int INSTEAD
+        setInstruction(0, UNKNOWN);
+    } else {
+
+        setInstruction(0, Instruction);
     }
 
     IFtoID->SetInstruction(Instruction);
-    setInstruction(0, Instruction);
-
     /* Update + write the new PC */
     IFtoID->SetPC(PC);
-
+    return ret;
 }

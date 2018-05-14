@@ -7,8 +7,11 @@ extern MemToWBRegister* MEMtoWB;
 void runWriteBack()
 {
     if (MEMtoWB->GetRegWrite()) {
-        generalRegWrite(regs, (int)MEMtoWB->GetDestination(), MEMtoWB->GetALUResult());
+        if (MEMtoWB->GetMemToReg())
+            generalRegWrite(regs, (int)MEMtoWB->GetDestination(), MEMtoWB->GetMemoryOutput());
+        else
+            generalRegWrite(regs, (int)MEMtoWB->GetDestination(), MEMtoWB->GetALUResult());
     }
-    setInstruction(4, MEMtoWB->GetInstructionForDump()); 
-    redoRegisterRead();
+    setInstruction(4, MEMtoWB->GetInstructionForDump());
+    redoRegisterRead(); // TODO: MARIE!!!
 }

@@ -18,6 +18,7 @@ public:
     int StallCycleHasPassed();
     int GetMisses() const;
     int GetHits() const;
+    void WriteAllDirtyToMain();
 private:
     void Decode(uint32_t address, uint32_t & tag, uint32_t & index, uint32_t & offset) const;
     uint32_t Encode(uint32_t tag, uint32_t index, uint32_t offset) const;
@@ -33,6 +34,7 @@ private:
     CacheType type;
     MemoryStore *mem;
     int wordsPerBlock;
+    int sets;
     uint32_t missLatency;
     uint32_t latencyLeft;
 };

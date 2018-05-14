@@ -27,7 +27,6 @@ static inline uint32_t extract(int input, int length, int offset) {
 }
 
 Cache::Cache(CacheConfig &config, MemoryStore *memory) {
-    int sets;
     hits = 0;
     misses = 0;
     latencyLeft = 0;
@@ -260,4 +259,12 @@ int Cache::StallCycleHasPassed() {
     if (latencyLeft > 0)
         latencyLeft--;
     return latencyLeft;
+}
+
+void Cache::WriteAllDirtyToMain() {
+    for (int i = 0; i < sets; i++)
+        Evict(way1[i], i);
+    if (type == TWO_WAY_SET_ASSOC)
+        for (int i = 0; i < sets; i++)
+            Evict(way2[i], i);
 }

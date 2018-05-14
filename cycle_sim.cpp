@@ -104,12 +104,13 @@ int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *m
 
 int runCycles(uint32_t cycles)
 {
+    int icStall, idStall;
     for(uint32_t i = 0; i < cycles; i++) {
-        runInstructionFetch();
+        icStall = runInstructionFetch();
         runWriteBack();
         runDecode();
         runExecute();
-        runMemory();
+        idStall = runMemory();
 
         IFtoID->CommitValues();
         IDtoEX->CommitValues();
