@@ -3,6 +3,9 @@
 
 extern IDtoExRegister* IDtoEX;
 extern IFtoIDRegister* IFtoID;
+extern EXtoMemRegister* EXtoMEM;
+extern MemToWBRegister* MEMtoWB;
+
 extern Register_T regs;
 
 static bool isJumpInstruction;
@@ -218,7 +221,7 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
     IDtoEX->SetOverflow(Overflow);
 }
 
-void runDecode(){
+int runDecode(){
     uint8_t opcode;
     uint8_t readRegister1;
     uint8_t readRegister2;
@@ -234,12 +237,7 @@ void runDecode(){
     immediateSE     = somethingToSignExtend(
                         getImmediate(Instruction));                  // 0 - 15 --> 32 sign extended
 
-    /*printf("Instruction: %d \n", (int)Instruction);
-    printf("opcode: %d \n", (int)opcode);
-    printf("RS: %d \n", (int)readRegister1);
-    printf("RT: %d \n", (int)readRegister2);
-    printf("RD: %d \n", (int)dest2);
-    */
+
     //(2) Write the values to ID/EX
     IDtoEX->SetPC(IFtoID->GetPC());
     IDtoEX->SetReadData1(generalRegRead(regs, (int)readRegister1));
@@ -255,15 +253,90 @@ void runDecode(){
 
     // (4) Resolve Branch
     // (4.1) Check for BEQ instruction
+    uint32_t src1 = generalRegRead(regs, (int)readRegister1);
+    uint32_t src2 = generalRegRead(regs, (int)readRegister2);
+
+    bool EXtoIDforward1 = false;
+    bool EXtoIDforward2 = false;
+    bool MEMtoIDforward1 = false;
+    bool MEMtoIDforward2 = false;
+
+
+        // do we need to stall? EX --> ID (after 1 stall)
+        if(EXtoMEM->GetRegWrite() &&
+            readRegister1 != 0 &&
+            EXtoMEM->GetDestination() == readRegister1){
+                EXtoIDforward1 = true;
+                // after stalled:
+                src1 = EXtoMEM->GetALUResult();
+        }
+        // load use MEM --> ID (after 2 stalls)
+        else if(MEMtoWB->GetRegWrite() &&
+                readRegister1!= 0 &&
+                MEMtoWB->GetDestination() == readRegister1){
+                MEMtoIDforward1 = true;
+                // after stalled:
+                src1 = MEMtoWB->GetALUResult();
+
+        }
+
+        if (EXtoMEM->GetRegWrite() &&
+            readRegister2 != 0 &&
+            EXtoMEM->GetDestination() == readRegister2){
+                EXtoIDforward2 = true;
+                // after the stall we can execute:
+                src2 = EXtoMEM->GetALUResult();
+        }
+        else if(MEMtoWB->GetRegWrite() &&
+                readRegister2!= 0 &&
+                MEMtoWB->GetDestination() == readRegister2){
+                MEMtoIDforward2 = true;
+                // after stalled:
+                src2 = MEMtoWB->GetALUResult();
+        }
+
+        if((MEMtoIDforward2 && EXtoIDforward1) ||
+            (MEMtoIDforward1 && EXtoIDforward2) ||
+            (EXtoIDforward1 || EXtoIDforward2)){
+
+            IDtoEX->SetRegDst(false);
+            IDtoEX->SetALUop1(false);
+            IDtoEX->SetALUop2(false);
+            IDtoEX->SetALUop3(false);
+            IDtoEX->SetALUSrc(false);
+            IDtoEX->SetBranch(false);
+            IDtoEX->SetMemRead(false);
+            IDtoEX->SetMemWrite(false);
+            IDtoEX->SetRegWrite(false);
+            IDtoEX->SetMemToReg(false);
+            IDtoEX->SetOverflow(false);
+            IDtoEX->SetPC(0);
+            IDtoEX->SetReadData1(0);
+            IDtoEX->SetReadData2(0);
+            IDtoEX->SetImmediateValue(0);
+            IDtoEX->SetDest1(0);
+            IDtoEX->SetDest2(0);
+            IDtoEX->SetRS(0);
+            IDtoEX->SetInstructionForDump(0);
+
+            IF_setPCWrite(false);
+
+            return 1;
+        }
+        else if(MEMtoIDforward1 || MEMtoIDforward2){
+            // stall twice
+        }
+
     if(opcode == OP_BEQ){
-        // check to see if the two are actually equal (needs to branch)
-        if(generalRegRead(regs, (int)readRegister1) == generalRegRead(regs, (int)readRegister2)){
+        if(src1 == src2){
             IF_pleaseBranch((int32_t)(IFtoID->GetPC() + (immediateSE<<2)));
+            IF_setPCWrite(true);
         }
     }
     else if(opcode == OP_BNE){
-        if(generalRegRead(regs, (int)readRegister1) != generalRegRead(regs, (int)readRegister2)){
+        if(src1 != src2){
             IF_pleaseBranch((int32_t)(IFtoID->GetPC() + (immediateSE<<2)));
+            IF_setPCWrite(true);
         }
     }
     else{
@@ -273,4 +346,5 @@ void runDecode(){
     // update the instruction position
     IDtoEX->SetInstructionForDump(IFtoID->GetInstruction());
     setInstruction(1,IFtoID->GetInstruction());
+    return 0; 
 }

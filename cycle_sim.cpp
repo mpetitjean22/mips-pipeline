@@ -18,55 +18,6 @@ static uint32_t stageInstruction[5] = {0,0,0,0,0};
 static bool stalled;
 Register_T regs;
 
-/*int main(void){
-    //make the registers for each of the stages
-    int cycleNum = 0;
-    IDtoEX = new IDtoExRegister;
-    MEMtoWB = new MemToWBRegister;
-    EXtoMEM = new EXtoMemRegister;
-    IFtoID = new IFtoIDRegister;
-    RegisterInfo reginfo;
-    regs = newReg();
-
-    MemoryStore *mem = createMemoryStore();
-    CacheConfig icConfig;
-    icConfig.cacheSize = 1024;
-    icConfig.blockSize = 64;
-    icConfig.type = DIRECT_MAPPED;
-    icConfig.missLatency = 5;
-    CacheConfig dcConfig = icConfig;
-    ICache = new Cache(icConfig, mem);
-    DCache = new Cache(dcConfig, mem);
-
-    generalRegWrite(regs, 8, (uint32_t)11);
-    generalRegWrite(regs, 9, (uint32_t)20);
-    generalRegWrite(regs, 10, (uint32_t)30);
-    generalRegWrite(regs, 11, (uint32_t)40);
-    generalRegWrite(regs, 12, (uint32_t)50);
-    generalRegWrite(regs, 13, (uint32_t)60);
-    generalRegWrite(regs, 14, (uint32_t)70);
-
-    for(int i =0; i<9; i++){
-        runInstructionFetch();
-        runDecode();
-        runExecute();
-        runMemory();
-        runWriteBack();
-
-        IFtoID->CommitValues();
-        IDtoEX->CommitValues();
-        EXtoMEM->CommitValues();
-        MEMtoWB->CommitValues();
-    }
-    convertToRegInfo(regs, &reginfo);
-    dumpRegisterState(reginfo);
-
-    // start the cycling process
-    printf("HII THIS WORKS I HOPE IDKK \n");
-
-    return 0;
-}
-*/
 
 // helps us keep track of which PC (instruction) is in
 // each stage
@@ -119,11 +70,13 @@ int runCycles(uint32_t cycles)
 
         icStall = runInstructionFetch();
         runWriteBack();
-        runDecode();
+        ifStall = runDecode();
         runExecute();
         idStall = runMemory();
 
-        IFtoID->CommitValues();
+        if(!ifStall){
+            IFtoID->CommitValues();
+        }
         IDtoEX->CommitValues();
         EXtoMEM->CommitValues();
         MEMtoWB->CommitValues();
@@ -138,6 +91,7 @@ int runCycles(uint32_t cycles)
 
         // need to check for halt instruction in WB and return 1 if it occurs
         cycleNum++;
+        ifStall = 0;
     }
 
     PipeState state;

@@ -5,7 +5,7 @@
 #include "sim.h"
 #include <stdio.h>
 
-void runDecode();
+int runDecode();
 void redoRegisterRead();
 
 #endif
