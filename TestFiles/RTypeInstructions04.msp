@@ -1,0 +1,5 @@
+# simple SUB instruction
+sub $t1, $t4, $t5
+
+# simple SUBU instruction
+subu $t2, $t4, $t5
