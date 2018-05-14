@@ -364,7 +364,7 @@ int runDecode(){
         IDtoEX->SetReadData2(0);
         IDtoEX->SetALUop1(0);
         IDtoEX->SetALUop2(0);
-        IDtoEx->SetALUop3(0);
+        IDtoEX->SetALUop3(0);
         IDtoEX->SetDest1(31);
     }
     else if(opcode == OP_ZERO){
@@ -399,6 +399,8 @@ int runDecode(){
 
         IF_pleaseBranch((int32_t)0x8000);
         IF_setPCWrite(true);
+        IF_unsetHalted();
+        execptionJump = false;
     }
     else{
         IF_setPCWrite(true);

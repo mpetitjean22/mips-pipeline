@@ -4,6 +4,7 @@
 #define OP_JAL = 0x3
 
 extern IDtoExRegister* IDtoEX;
+extern IFtoIDRegister* IFtoID; 
 extern EXtoMemRegister* EXtoMEM;
 extern MemToWBRegister* MEMtoWB;
 enum FUN_IDS
@@ -37,7 +38,7 @@ static uint8_t getSign(uint32_t value)
 {
     return (value >> 31) & 0x1;
 }
-static void performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint8_t shmt, bool overflow){
+static int performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint8_t shmt, bool overflow){
     uint32_t Result = 0;
     bool Zero = 0;
     bool overflowfound;
@@ -87,9 +88,7 @@ static void performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint
         Zero = 1;
     }
     if(overflowfound){
-        // (1) jumps to 0x8000 (idk how to do this yet)
-        // (2) this instruction becomes a NOP
-        // (3) all other instructions become a NOP as well
+        return 1;
     }
     EXtoMEM->SetALUResult(Result);
     EXtoMEM->SetZero(Zero);
@@ -204,13 +203,52 @@ void runExecute(){
     }
 
 // (2) ALU Execution
+    bool exceptionJump;
     if(ALUSrc){
-        performALU(readData1, immediate, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt, Overflow);
+        exceptionJump = performALU(readData1, immediate, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt, Overflow);
     }
     else{
-        performALU(readData1, readData2, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt, Overflow);
+        exceptionJump = performALU(readData1, readData2, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt, Overflow);
     }
+    if(exceptionJump){
+        EXtoMEM->SetRegWrite(false);
+        EXtoMEM->SetMemRead(false);
+        EXtoMEM->SetMemWrite(false);
+        EXtoMEM->SetBranch(false);
+        EXtoMEM->SetZero(false);
+        EXtoMEM->SetALUResult(0);
+        EXtoMEM->SetReadData2(0);
+        EXtoMEM->SetDestination(0);
+        EXtoMEM->SetInstructionForDump(0);
 
+        IDtoEX->SetRegDst(false);
+        IDtoEX->SetALUop1(false);
+        IDtoEX->SetALUop2(false);
+        IDtoEX->SetALUop3(false);
+        IDtoEX->SetALUSrc(false);
+        IDtoEX->SetBranch(false);
+        IDtoEX->SetMemRead(false);
+        IDtoEX->SetMemWrite(false);
+        IDtoEX->SetRegWrite(false);
+        IDtoEX->SetMemToReg(false);
+        IDtoEX->SetOverflow(false);
+        IDtoEX->SetPC(0);
+        IDtoEX->SetReadData1(0);
+        IDtoEX->SetReadData2(0);
+        IDtoEX->SetImmediateValue(0);
+        IDtoEX->SetDest1(0);
+        IDtoEX->SetDest2(0);
+        IDtoEX->SetRS(0);
+        IDtoEX->SetInstructionForDump(0);
+
+        IFtoID->SetPC(0);
+        IFtoID->SetInstruction(0);
+
+        IF_pleaseBranch((int32_t)0x8000);
+        IF_setPCWrite(true);
+        IF_unsetHalted();
+        exceptionJump = false;
+    }
 // (3) Write to EX/MEM register
     if(regDst){
         EXtoMEM->SetDestination(dest2);
