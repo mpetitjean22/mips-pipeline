@@ -71,7 +71,7 @@ int main(int argc, char **argv)
     initSimulator(icConfig, dcConfig, mem);
 
     // we did this one
-    runCycles(7);
+    runCycles(10);
 
     // IMPLEMENT THIS ONE!
     // runTillHalt();
