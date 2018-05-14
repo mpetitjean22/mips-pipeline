@@ -10,12 +10,11 @@ EXtoMemRegister* EXtoMEM;
 IFtoIDRegister* IFtoID;
 Cache *ICache;
 Cache *DCache;
-RegisterInfo reginfo;
+MemoryStore *mem;
 
 enum {HALT_INSTR = 0xfeedfeed, IF=0, ID=1, EX=2, Mem=3, WB=4};
 static int cycleNum = 0;
 static uint32_t stageInstruction[5] = {0,0,0,0,0};
-static bool stalled;
 Register_T regs;
 
 
@@ -43,7 +42,7 @@ int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *m
     EXtoMEM = new EXtoMemRegister;
     IFtoID = new IFtoIDRegister;
     regs = newReg();
-    stalled = false;
+    mem = mainMem;
 
     cycleNum = 0;
     return 0; // unused
@@ -51,14 +50,14 @@ int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *m
 
 int runCycles(uint32_t cycles)
 {
-    int icStall, idStall, stalls, cyclesLeft, possibleStalls;
+    int ifStall, stalls, cyclesLeft, possibleStalls;
+    uint32_t i;
+    int icStall = ICache->StallCyclesHavePassed(0); // 0 to just get the amount left
+    int dcStall = DCache->StallCyclesHavePassed(0);
 
-    icStall = ICache->StallCyclesHavePassed(0); // 0 to just get the amount left
-    idStall = DCache->StallCyclesHavePassed(0);
-
-    for(uint32_t i = 0; i < cycles; i++) {
-        if (stalled) {
-            stalls = (icStall > idStall) ? icStall : idStall;
+    for(i = 0; i < cycles; i++) {
+        if (icStall > 0 || dcStall > 0) {
+            stalls = (icStall > dcStall) ? icStall : dcStall;
             cyclesLeft = cycles - i;
             possibleStalls = (stalls < cyclesLeft) ? stalls : cyclesLeft;
             ICache->StallCyclesHavePassed(possibleStalls);
@@ -72,46 +71,91 @@ int runCycles(uint32_t cycles)
         runWriteBack();
         ifStall = runDecode();
         runExecute();
-        idStall = runMemory();
+        dcStall = runMemory();
 
-        if(!ifStall){
+        if (!ifStall) {
             IFtoID->CommitValues();
         }
         IDtoEX->CommitValues();
         EXtoMEM->CommitValues();
         MEMtoWB->CommitValues();
-
-        if (icStall > 0 || idStall > 0) {
-            stalled = true;
-        }
-
-        if (stageInstruction[WB] == HALT_INSTR) {
-
-        }
-
-        // need to check for halt instruction in WB and return 1 if it occurs
         cycleNum++;
-        ifStall = 0;
+
+        if (stageInstruction[WB] == HALT_INSTR)
+            break;
     }
 
     PipeState state;
 
     makePipeState(&state);
-    convertToRegInfo(regs, &reginfo);
-
-    dumpRegisterState(reginfo);
     dumpPipeState(state);
-    return 0;
+
+    // TODO: remove later
+    /*%%%%%%%%%%%%%%%%%*/
+    RegisterInfo reginfo;
+    convertToRegInfo(regs, &reginfo);
+    dumpRegisterState(reginfo);
+    /*%%%%%%%%%%%%%%%%%*/
+    return i < cycles - 1;
 }
 
 int runTillHalt()
 {
+    int icStall, dcStall, ifStall, stalls;
+
+    icStall = ICache->StallCyclesHavePassed(0); // 0 to just get the amount left
+    dcStall = DCache->StallCyclesHavePassed(0);
+
+    while (1) {
+        if (icStall > 0 || dcStall > 0) {
+            stalls = (icStall > dcStall) ? icStall : dcStall;
+            ICache->StallCyclesHavePassed(stalls);
+            DCache->StallCyclesHavePassed(stalls);
+            cycleNum += stalls;
+            continue;
+        }
+
+        icStall = runInstructionFetch();
+        runWriteBack();
+        ifStall = runDecode();
+        runExecute();
+        dcStall = runMemory();
+
+        if (!ifStall) {
+            IFtoID->CommitValues();
+        }
+        IDtoEX->CommitValues();
+        EXtoMEM->CommitValues();
+        MEMtoWB->CommitValues();
+        cycleNum++;
+
+        if (stageInstruction[WB] == HALT_INSTR)
+            break;
+    }
+
+    PipeState state;
+
+    makePipeState(&state);
+    dumpPipeState(state);
 
     // run program until halt is received
     return 0; // unused
 }
 
 int finaliseSimulator() {
-    // needs to be implemented
+    struct SimulationStats stats;
+    RegisterInfo reginfo;
+    stats.totalCycles = cycleNum;
+    stats.icHits = ICache->GetHits();
+    stats.icMisses = ICache->GetMisses();
+    stats.dcHits = DCache->GetHits();
+    stats.dcMisses = DCache->GetMisses();
+    printSimStats(stats);
+    DCache->WriteAllDirtyToMain();
+
+    convertToRegInfo(regs, &reginfo);
+    dumpRegisterState(reginfo);
+    dumpMemoryState(mem);
+
     return 0;
 }

@@ -7,4 +7,5 @@
 int runInstructionFetch();
 void IF_pleaseBranch(int32_t  branchAddressVal);
 void IF_setPCWrite(bool pcWriteVal);
+void IF_unsetHalted();
 #endif
