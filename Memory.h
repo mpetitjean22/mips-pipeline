@@ -5,6 +5,6 @@
 #include "sim.h"
 #include <stdio.h>
 
-void runMemory();
+int runMemory();
 
 #endif
