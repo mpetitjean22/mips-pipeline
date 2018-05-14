@@ -2,6 +2,10 @@
 #define IDtoExREGISTER_H
 
 #include "StageRegister.h"
+#ifndef MEMORYSTORE_H
+#define MEMORYSTORE_H
+#include "MemoryStore.h"
+#endif
 
 class IDtoExRegister : public StageRegister {
 public:
@@ -25,6 +29,7 @@ public:
     void SetDest2(uint8_t Dest2Val);
     void SetRS(uint8_t RSVal);
     void SetInstructionForDump(uint32_t InstructionVal);
+    void SetMemSize(enum MemEntrySize size);
 
     bool GetRegDst() const;
     bool GetALUop1() const;
@@ -44,6 +49,7 @@ public:
     uint8_t GetDest2() const;
     uint8_t GetRS() const;
     uint32_t GetInstructionForDump() const;
+    enum MemEntrySize GetMemSize() const;
 
     void CommitValues();
 
@@ -66,6 +72,7 @@ private:
     uint8_t Dest2;
     uint8_t RS;
     uint32_t Instruction;
+    enum MemEntrySize memSize;
 
     bool tempRegDst;
     bool tempALUop1;
@@ -85,6 +92,7 @@ private:
     uint8_t tempDest2;
     uint8_t tempRS;
     uint32_t tempInstruction;
+    enum MemEntrySize tempMemSize;
 };
 
 #endif

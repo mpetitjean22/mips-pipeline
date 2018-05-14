@@ -190,5 +190,6 @@ void runExecute(){
     EXtoMEM->SetBranch(IDtoEX->GetBranch());
     EXtoMEM->SetReadData2(readData2);
     EXtoMEM->SetInstructionForDump(IDtoEX->GetInstructionForDump());
+    EXtoMEM->SetMemSize(IDtoEX->GetMemSize());
     setInstruction(2, IDtoEX->GetInstructionForDump());
 }

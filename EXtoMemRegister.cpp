@@ -56,6 +56,11 @@ void EXtoMemRegister::SetInstructionForDump(uint32_t InstructionVal)
     tempInstruction = InstructionVal;
 }
 
+void EXtoMemRegister::SetMemSize(enum MemEntrySize size)
+{
+    tempMemSize = size;
+}
+
 /* ------------------------------------------------------------------ */
 
 bool EXtoMemRegister::GetRegWrite() const
@@ -99,6 +104,11 @@ uint32_t EXtoMemRegister::GetInstructionForDump() const
     return Instruction;
 }
 
+enum MemEntrySize EXtoMemRegister::GetMemSize() const
+{
+    return memSize;
+}
+
 
 /* ------------------------------------------------------------------ */
 
@@ -114,7 +124,7 @@ void EXtoMemRegister::CommitValues()
     ReadData2 = tempReadData2;
     Destination = tempDestination;
     Instruction = tempInstruction;
-
+    memSize = tempMemSize;
 }
 
 /* ------------------------------------------------------------------ */

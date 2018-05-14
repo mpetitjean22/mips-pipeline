@@ -2,6 +2,10 @@
 #define EXtoMemREGISTER_H
 
 #include "StageRegister.h"
+#ifndef MEMORYSTORE_H
+#define MEMORYSTORE_H
+#include "MemoryStore.h"
+#endif
 
 class EXtoMemRegister : public StageRegister {
 public:
@@ -16,6 +20,7 @@ public:
     void SetReadData2(uint32_t ReadData2Val);
     void SetDestination(uint8_t DesintationVal);
     void SetInstructionForDump(uint32_t InstructionVal);
+    void SetMemSize(enum MemEntrySize size);
 
     bool GetRegWrite() const;
     bool GetMemRead() const;
@@ -27,6 +32,7 @@ public:
     uint32_t GetReadData2() const;
     uint8_t GetDestination() const;
     uint32_t GetInstructionForDump() const;
+    enum MemEntrySize GetMemSize() const;
 
     void CommitValues();
 
@@ -41,6 +47,7 @@ private:
     uint32_t ReadData2;
     uint8_t Destination;
     uint32_t Instruction;
+    enum MemEntrySize memSize;
 
     bool tempRegWrite;
     bool tempMemRead;
@@ -52,6 +59,7 @@ private:
     uint32_t tempReadData2;
     uint8_t tempDestination;
     uint32_t tempInstruction;
+    enum MemEntrySize tempMemSize;
 };
 
 #endif

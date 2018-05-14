@@ -94,6 +94,7 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
     bool MemWrite   = 0;
     bool RegWrite   = 0;
     bool MemToReg   = 0;
+    enum MemEntrySize memSize = WORD_SIZE;
 
     /* The Textbook's ALUops were not extensive enough to account for
         all of the instructions in the MIPS implementation. Thus, I have
@@ -128,10 +129,27 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
             // implement this!
             break;
         case OP_LBU:
+            MemRead = 1;
+            ALUSrc = 1;
+            MemToReg = 1;
+            RegWrite = 1;
+            memSize = BYTE_SIZE;
+            break;
         case OP_LHU:
-        case OP_LUI:
+            MemRead = 1;
+            ALUSrc = 1;
+            MemToReg = 1;
+            RegWrite = 1;
+            memSize = HALF_SIZE;
+            break;
         case OP_LW:
-
+            MemRead = 1;
+            ALUSrc = 1;
+            MemToReg = 1;
+            RegWrite = 1;
+            memSize = WORD_SIZE;
+            break;
+        case OP_LUI:
             break;
         case OP_ORI:
             RegWrite    = 1;
@@ -147,9 +165,19 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
             ALUop3      = 1;
             break;
         case OP_SB:
+            ALUSrc = 1;
+            MemWrite = 1;
+            memSize = BYTE_SIZE;
+            break;
         case OP_SH:
+            ALUSrc = 1;
+            MemWrite = 1;
+            memSize = HALF_SIZE;
+            break;
         case OP_SW:
-            // implement this!
+            ALUSrc = 1;
+            MemWrite = 1;
+            memSize = WORD_SIZE;
             break;
         case OP_J:
         case OP_JAL:
@@ -167,6 +195,7 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
     IDtoEX->SetMemWrite(MemWrite);
     IDtoEX->SetRegWrite(RegWrite);
     IDtoEX->SetMemToReg(MemToReg);
+    IDtoEX->SetMemSize(memSize);
 }
 void runDecode(){
     uint8_t opcode;

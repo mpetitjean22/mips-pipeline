@@ -34,6 +34,12 @@ void MemToWBRegister::SetInstructionForDump(uint32_t InstructionVal)
 {
     tempInstruction = InstructionVal;
 }
+
+void MemToWBRegister::SetMemSize(enum MemEntrySize size)
+{
+    tempMemSize = size;
+}
+
 /* ------------------------------------------------------------------ */
 
 bool MemToWBRegister::GetRegWrite() const
@@ -61,6 +67,10 @@ uint32_t MemToWBRegister::GetInstructionForDump() const
     return Instruction;
 }
 
+enum MemEntrySize MemToWBRegister::GetMemSize() const
+{
+    return memSize;
+}
 
 /* ------------------------------------------------------------------ */
 
@@ -72,6 +82,7 @@ void MemToWBRegister::CommitValues()
     MemoryOutput = tempMemoryOutput;
     Destination = tempDestination;
     Instruction = tempInstruction;
+    memSize = tempMemSize;
 }
 
 /* ------------------------------------------------------------------ */

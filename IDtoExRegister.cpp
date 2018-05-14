@@ -1,4 +1,5 @@
 #include "IDtoExRegister.h"
+
 /* IFtoEx Register */
 
 IDtoExRegister::IDtoExRegister(){
@@ -77,6 +78,11 @@ void IDtoExRegister::SetInstructionForDump(uint32_t InstructionVal)
     tempInstruction = InstructionVal;
 }
 
+void IDtoExRegister::SetMemSize(enum MemEntrySize size)
+{
+    tempMemSize = size;
+}
+
 /* ------------------------------------------------------------------ */
 
 bool IDtoExRegister::GetRegDst() const
@@ -152,6 +158,11 @@ uint32_t IDtoExRegister::GetInstructionForDump() const
     return Instruction;
 }
 
+enum MemEntrySize IDtoExRegister::GetMemSize() const
+{
+    return memSize;
+}
+
 /* ------------------------------------------------------------------ */
 
 void IDtoExRegister::CommitValues()
@@ -173,7 +184,7 @@ void IDtoExRegister::CommitValues()
     Dest2 = tempDest2;
     RS = tempRS;
     Instruction = tempInstruction;
-
+    memSize = tempMemSize;
 }
 
 /* ------------------------------------------------------------------ */
