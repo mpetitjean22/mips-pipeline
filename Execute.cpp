@@ -166,9 +166,13 @@ void runExecute(){
     else if(MEMtoWB->GetRegWrite() &&
             rs != 0 &&
             MEMtoWB->GetDestination() == rs){
-        // implement memory output --> execute
-        // but for now just ALUResult
-        readData1 = MEMtoWB->GetALUResult();
+
+        if(MEMtoWB->GetMemToReg() == 0){
+            readData1 = MEMtoWB->GetMemoryOutput();
+        }
+        else{
+            readData1 = MEMtoWB->GetALUResult();
+        }
     }
 
 // check for readdata2
@@ -180,8 +184,13 @@ void runExecute(){
     else if(MEMtoWB->GetRegWrite() &&
             dest1 != 0 &&
             MEMtoWB->GetDestination() == dest1){
-        printf("HERE");
-        readData2 = MEMtoWB->GetALUResult();
+
+        if(MEMtoWB->GetRegWrite() == 0){
+            readData2 = MEMtoWB->GetMemoryOutput();
+        }
+        else{
+            readData2 = MEMtoWB->GetALUResult();
+        }
     }
 
 // (2) ALU Execution
