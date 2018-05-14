@@ -12,6 +12,7 @@ RegisterInfo reginfo;
 
 static int cycleNum = 0;
 static uint32_t stageInstruction[5] = {0,0,0,0,0};
+static bool stalled;
 Register_T regs;
 
 /*int main(void){
@@ -88,6 +89,7 @@ int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *m
     EXtoMEM = new EXtoMemRegister;
     IFtoID = new IFtoIDRegister;
     regs = newReg();
+    stalled = false;
 
     cycleNum = 0;
     return 0; // unused

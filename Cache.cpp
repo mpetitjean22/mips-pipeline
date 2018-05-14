@@ -255,9 +255,11 @@ int Cache::Write(uint32_t address, uint32_t value, MemEntrySize size) {
     return missLatency;
 }
 
-int Cache::StallCycleHasPassed() {
-    if (latencyLeft > 0)
-        latencyLeft--;
+int Cache::StallCyclesHavePassed(int cycles) {
+    if (cycles > latencyLeft)
+        latencyLeft = 0;
+    else
+        latencyLeft -= cycles;
     return latencyLeft;
 }
 
