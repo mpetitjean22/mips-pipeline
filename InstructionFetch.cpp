@@ -29,6 +29,8 @@ void runInstructionFetch(){
         pleaseBranch = false;
     } else if (pcWrite) {
         PC += 4;
+        // ikik stalls but lemme test everything else for now
+        IF_setPCWrite(false); 
     }
 
     /* grab + write the instruction address*/

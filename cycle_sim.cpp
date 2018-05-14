@@ -8,12 +8,13 @@ EXtoMemRegister* EXtoMEM;
 IFtoIDRegister* IFtoID;
 Cache *ICache;
 Cache *DCache;
+RegisterInfo reginfo;
 
 static int cycleNum = 0;
 static uint32_t stageInstruction[5] = {0,0,0,0,0};
 Register_T regs;
 
-int main(void){
+/*int main(void){
     //make the registers for each of the stages
     int cycleNum = 0;
     IDtoEX = new IDtoExRegister;
@@ -61,6 +62,8 @@ int main(void){
 
     return 0;
 }
+*/
+
 // helps us keep track of which PC (instruction) is in
 // each stage
 void setInstruction(int stage, uint32_t InstructionVal){
@@ -85,6 +88,16 @@ int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *m
     EXtoMEM = new EXtoMemRegister;
     IFtoID = new IFtoIDRegister;
     regs = newReg();
+
+    // temporary!
+    generalRegWrite(regs, 8, (uint32_t)11);
+    generalRegWrite(regs, 9, (uint32_t)20);
+    generalRegWrite(regs, 10, (uint32_t)30);
+    generalRegWrite(regs, 11, (uint32_t)40);
+    generalRegWrite(regs, 12, (uint32_t)50);
+    generalRegWrite(regs, 13, (uint32_t)60);
+    generalRegWrite(regs, 14, (uint32_t)70);
+
     cycleNum = 0;
     return 0; // unused
 }
@@ -107,12 +120,13 @@ int runCycles(uint32_t cycles)
         cycleNum++;
     }
 
-    // we should be using dumppiplinestate instead
-    printf("Cycle: %d \n", cycleNum);
     PipeState state;
-    makePipeState(&state);
-    dumpPipeState(state);
 
+    makePipeState(&state);
+    convertToRegInfo(regs, &reginfo);
+
+    dumpRegisterState(reginfo);
+    dumpPipeState(state);
     return 0;
 }
 

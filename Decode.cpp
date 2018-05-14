@@ -216,6 +216,9 @@ void runDecode(){
             IF_pleaseBranch((int32_t)(IFtoID->GetPC() + (immediateSE<<2)));
         }
     }
+    else{
+        IF_setPCWrite(true);
+    }
 
     // update the instruction position
     IDtoEX->SetInstructionForDump(IFtoID->GetInstruction());

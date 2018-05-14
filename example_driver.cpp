@@ -67,13 +67,17 @@ int main(int argc, char **argv)
     icConfig.missLatency = 5;
     CacheConfig dcConfig = icConfig;
 
+    // we did this one
     initSimulator(icConfig, dcConfig, mem);
 
-    runCycles(10);
+    // we did this one
+    runCycles(7);
 
-    runTillHalt();
+    // IMPLEMENT THIS ONE!
+    // runTillHalt();
 
-    finaliseSimulator();
+    // why is this spelt with an s...
+    //finaliseSimulator();
 
     delete mem;
     return 0;
