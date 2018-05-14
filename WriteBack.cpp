@@ -13,5 +13,5 @@ void runWriteBack()
             generalRegWrite(regs, (int)MEMtoWB->GetDestination(), MEMtoWB->GetALUResult());
     }
     setInstruction(4, MEMtoWB->GetInstructionForDump());
-    redoRegisterRead(); // TODO: MARIE!!!
+    //redoRegisterRead(); 
 }

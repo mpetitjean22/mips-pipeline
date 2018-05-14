@@ -43,7 +43,9 @@ int runInstructionFetch(){
     }
 
     IFtoID->SetInstruction(Instruction);
-    /* Update + write the new PC */
-    IFtoID->SetPC(PC);
+
+    /* passing along PC+4 to the decode stage of the next cycle so that
+        we can accurately predit the branch prediction */
+    IFtoID->SetPC(PC+4);
     return ret;
 }

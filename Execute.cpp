@@ -175,7 +175,7 @@ void runExecute(){
             rs != 0 &&
             MEMtoWB->GetDestination() == rs){
 
-        if(MEMtoWB->GetMemToReg() == 0){
+        if(MEMtoWB->GetMemToReg() == 1){
             readData1 = MEMtoWB->GetMemoryOutput();
         }
         else{
@@ -193,7 +193,7 @@ void runExecute(){
             dest1 != 0 &&
             MEMtoWB->GetDestination() == dest1){
 
-        if(MEMtoWB->GetRegWrite() == 0){
+        if(MEMtoWB->GetMemToReg() == 1){
             readData2 = MEMtoWB->GetMemoryOutput();
         }
         else{
