@@ -52,6 +52,7 @@ int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *m
 int runCycles(uint32_t cycles)
 {
     int icStall, idStall, stalls, cyclesLeft, possibleStalls;
+    int ifStall = 0;
 
     icStall = ICache->StallCyclesHavePassed(0); // 0 to just get the amount left
     idStall = DCache->StallCyclesHavePassed(0);
