@@ -197,7 +197,7 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
             memSize = WORD_SIZE;
             break;
         case OP_JAL:
-            RegWrite = 1; 
+            RegWrite = 1;
             break;
     //    default:
             // the instruction is not valid
@@ -275,7 +275,12 @@ int runDecode(){
                 MEMtoWB->GetDestination() == readRegister1){
                 MEMtoIDforward1 = true;
                 // after stalled:
-                src1 = MEMtoWB->GetALUResult();
+                if(MEMtoWB->GetMemToReg() == 1){
+                    src1 = MEMtoWB->GetMemoryOutput();
+                }
+                else{
+                    src1 = MEMtoWB->GetALUResult();
+                }
 
         }
 
@@ -291,7 +296,12 @@ int runDecode(){
                 MEMtoWB->GetDestination() == readRegister2){
                 MEMtoIDforward2 = true;
                 // after stalled:
-                src2 = MEMtoWB->GetALUResult();
+                if(MEMtoWB->GetMemToReg() == 1){
+                    src2 = MEMtoWB->GetMemoryOutput();
+                }
+                else{
+                    src2 = MEMtoWB->GetALUResult();
+                }
         }
 
         if((MEMtoIDforward2 && EXtoIDforward1) ||
@@ -349,6 +359,12 @@ int runDecode(){
     else if(opcode == OP_JAL){
         IF_pleaseBranch((int32_t)(IFtoID->GetPC() + (immediateSE<<2) + 4));
         IF_setPCWrite(true);
+    }
+    else if(opcode == OP_ZERO){
+        if((immediateSE & 0x3F) == FUN_JR){
+            IF_pleaseBranch((int32_t)src1);
+            IF_setPCWrite(true);
+        }
     }
     else{
         IF_setPCWrite(true);
