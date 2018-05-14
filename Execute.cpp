@@ -30,10 +30,15 @@ enum CONTROl_VALS
     SHIFT_RIGHT = 9,
     NOR         = 12
 };
-
-static void performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint8_t shmt){
+// from golden sim
+static uint8_t getSign(uint32_t value)
+{
+    return (value >> 31) & 0x1;
+}
+static void performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint8_t shmt, bool overflow){
     uint32_t Result = 0;
     bool Zero = 0;
+    bool overflowfound;
     switch(Control){
         case AND:
             Result = (uint32_t)(source1 - source2);
@@ -42,10 +47,16 @@ static void performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint
             Result = (uint32_t)(source1 | source2);
             break;
         case ADD:
-            Result = (uint32_t)(source1 + source2);
+            Result = (uint32_t)((int32_t)source1 + (int32_t)source2);
+            if(overflow){
+                overflowfound = getSign(source1) == getSign(source2) && getSign(source2) != getSign(Result);
+            }
             break;
         case SUBTRACT:
-            Result = (uint32_t)(source1 - source2);
+            Result = (uint32_t)((int32_t)source1 - (int32_t)source2);
+            if(overflow){
+                overflowfound = getSign(source1) != getSign(source2) && getSign(source2) == getSign(Result);
+            }
             break;
         case SLT:
             if(source1 < source2){
@@ -64,6 +75,11 @@ static void performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint
     }
     if(Result == 0){
         Zero = 1;
+    }
+    if(overflowfound){
+        // (1) jumps to 0x8000 (idk how to do this yet)
+        // (2) this instruction becomes a NOP
+        // (3) all other instructions become a NOP as well
     }
     EXtoMEM->SetALUResult(Result);
     EXtoMEM->SetZero(Zero);
@@ -129,6 +145,7 @@ void runExecute(){
     bool ALUop3     = IDtoEX->GetALUop3();
     bool regDst     = IDtoEX->GetRegDst();
     bool ALUSrc     = IDtoEX->GetALUSrc();
+    bool Overflow   = IDtoEX->GetOverflow();
     uint32_t readData1  = IDtoEX->GetReadData1();
     uint32_t readData2  = IDtoEX->GetReadData2();
     uint32_t immediate  = IDtoEX->GetImmediateValue();
@@ -169,10 +186,10 @@ void runExecute(){
 
 // (2) ALU Execution
     if(ALUSrc){
-        performALU(readData1, immediate, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt);
+        performALU(readData1, immediate, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt, Overflow);
     }
     else{
-        performALU(readData1, readData2, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt);
+        performALU(readData1, readData2, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt, Overflow);
     }
 
 // (3) Write to EX/MEM register

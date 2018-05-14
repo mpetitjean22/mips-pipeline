@@ -160,14 +160,15 @@ uint32_t IDtoExRegister::GetInstructionForDump() const
 {
     return Instruction;
 }
+bool IDtoExRegister::GetOverflow() const{
+    return Overflow;
+}
 
 enum MemEntrySize IDtoExRegister::GetMemSize() const
 {
     return memSize;
 }
-bool IDtoExRegister::GetOverflow(){
-    return Overflow;
-}
+
 
 
 /* ------------------------------------------------------------------ */
@@ -192,7 +193,7 @@ void IDtoExRegister::CommitValues()
     RS = tempRS;
     Instruction = tempInstruction;
     memSize = tempMemSize;
-    Overflow = tempOverflow; 
+    Overflow = tempOverflow;
 }
 
 /* ------------------------------------------------------------------ */

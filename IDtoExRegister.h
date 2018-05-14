@@ -87,7 +87,7 @@ private:
     bool tempMemWrite;
     bool tempRegWrite;
     bool tempMemToReg;
-    bool tempOverflow; 
+    bool tempOverflow;
     uint32_t tempPC;
     uint32_t tempReadData1;
     uint32_t tempReadData2;

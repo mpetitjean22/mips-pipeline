@@ -94,6 +94,7 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
     bool MemWrite   = 0;
     bool RegWrite   = 0;
     bool MemToReg   = 0;
+    bool Overflow   = 0;
     enum MemEntrySize memSize = WORD_SIZE;
 
     /* The Textbook's ALUops were not extensive enough to account for
@@ -110,11 +111,18 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
 
     switch(opcode){
         case OP_ZERO:
+            if(func == FUN_ADD || func == FUN_SUB){
+                Overflow = 1;
+            }
             RegDst      = 1;
             ALUop1      = 1;
             RegWrite    = 1;
             break;
         case OP_ADDI:
+            Overflow    = 1;
+            RegWrite    = 1;
+            ALUSrc      = 1;
+            break;
         case OP_ADDIU:
             RegWrite    = 1;
             ALUSrc      = 1;
@@ -158,6 +166,12 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
             ALUop3      = 1;
             break;
         case OP_SLTI:
+            RegWrite    = 1;
+            ALUSrc      = 1;
+            ALUop1      = 1;
+            ALUop3      = 1;
+            Overflow    = 1;
+            break;
         case OP_SLTIU:
             RegWrite    = 1;
             ALUSrc      = 1;
@@ -183,6 +197,11 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
         case OP_JAL:
             // implement this!!
             break;
+    //    default:
+            // the instruction is not valid
+            // (1) set the PC to 0x8000
+            // (2) instruction becomes a NOP
+            // (3) rest of the instructions become a NOP
     }
 
     IDtoEX->SetRegDst(RegDst);
@@ -196,7 +215,9 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
     IDtoEX->SetRegWrite(RegWrite);
     IDtoEX->SetMemToReg(MemToReg);
     IDtoEX->SetMemSize(memSize);
+    IDtoEX->SetOverflow(Overflow);
 }
+
 void runDecode(){
     uint8_t opcode;
     uint8_t readRegister1;
