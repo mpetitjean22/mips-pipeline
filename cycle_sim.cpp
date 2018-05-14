@@ -56,7 +56,7 @@ int runCycles(uint32_t cycles)
         runExecute();
         idStall = runMemory();
 
-        if(ifStall){
+        if(!ifStall){
             IFtoID->CommitValues();
         }
         IDtoEX->CommitValues();
