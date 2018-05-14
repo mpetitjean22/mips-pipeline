@@ -8,7 +8,7 @@ extern MemToWBRegister* MEMtoWB;
 
 extern Register_T regs;
 
-static bool isJumpInstruction;
+static bool execptionJump = false;
 static uint32_t Instruction;
 
 enum OP_IDS
@@ -197,8 +197,9 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
             memSize = WORD_SIZE;
             break;
         case OP_JAL:
-            RegWrite = 1; 
+            RegWrite = 1;
             break;
+            execptionJump = true;
     //    default:
             // the instruction is not valid
             // (1) set the PC to 0x8000
@@ -275,7 +276,12 @@ int runDecode(){
                 MEMtoWB->GetDestination() == readRegister1){
                 MEMtoIDforward1 = true;
                 // after stalled:
-                src1 = MEMtoWB->GetALUResult();
+                if(MEMtoWB->GetMemToReg() == 1){
+                    src1 = MEMtoWB->GetMemoryOutput();
+                }
+                else{
+                    src1 = MEMtoWB->GetALUResult();
+                }
 
         }
 
@@ -291,7 +297,12 @@ int runDecode(){
                 MEMtoWB->GetDestination() == readRegister2){
                 MEMtoIDforward2 = true;
                 // after stalled:
-                src2 = MEMtoWB->GetALUResult();
+                if(MEMtoWB->GetMemToReg() == 1){
+                    src2 = MEMtoWB->GetMemoryOutput();
+                }
+                else{
+                    src2 = MEMtoWB->GetALUResult();
+                }
         }
 
         if((MEMtoIDforward2 && EXtoIDforward1) ||
@@ -348,6 +359,45 @@ int runDecode(){
     }
     else if(opcode == OP_JAL){
         IF_pleaseBranch((int32_t)(IFtoID->GetPC() + (immediateSE<<2) + 4));
+        IF_setPCWrite(true);
+        IDtoEX->SetReadData1(IFtoID->GetPC()+4);
+        IDtoEX->SetReadData2(0);
+        IDtoEX->SetALUop1(0);
+        IDtoEX->SetALUop2(0);
+        IDtoEx->SetALUop3(0);
+        IDtoEX->SetDest1(31);
+    }
+    else if(opcode == OP_ZERO){
+        if((immediateSE & 0x3F) == FUN_JR){
+            IF_pleaseBranch((int32_t)src1);
+            IF_setPCWrite(true);
+        }
+    }
+    else if(execptionJump){
+        IDtoEX->SetRegDst(false);
+        IDtoEX->SetALUop1(false);
+        IDtoEX->SetALUop2(false);
+        IDtoEX->SetALUop3(false);
+        IDtoEX->SetALUSrc(false);
+        IDtoEX->SetBranch(false);
+        IDtoEX->SetMemRead(false);
+        IDtoEX->SetMemWrite(false);
+        IDtoEX->SetRegWrite(false);
+        IDtoEX->SetMemToReg(false);
+        IDtoEX->SetOverflow(false);
+        IDtoEX->SetPC(0);
+        IDtoEX->SetReadData1(0);
+        IDtoEX->SetReadData2(0);
+        IDtoEX->SetImmediateValue(0);
+        IDtoEX->SetDest1(0);
+        IDtoEX->SetDest2(0);
+        IDtoEX->SetRS(0);
+        IDtoEX->SetInstructionForDump(0);
+
+        IFtoID->SetPC(0);
+        IFtoID->SetInstruction(0);
+
+        IF_pleaseBranch((int32_t)0x8000);
         IF_setPCWrite(true);
     }
     else{

@@ -1,6 +1,8 @@
 #include "Execute.h"
 #include "sim.h"
 
+#define OP_JAL = 0x3
+
 extern IDtoExRegister* IDtoEX;
 extern EXtoMemRegister* EXtoMEM;
 extern MemToWBRegister* MEMtoWB;
@@ -208,16 +210,10 @@ void runExecute(){
     else{
         performALU(readData1, readData2, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt, Overflow);
     }
-    if(opcode == OP_JAL){
-        performALU(PC+4, 0, ADD, shmt, Overflow);
-    }
 
 // (3) Write to EX/MEM register
     if(regDst){
         EXtoMEM->SetDestination(dest2);
-    }
-    else if(opcode == OP_JAL){
-        EXtoMEM->SetDetination(31);
     }
     else{
         EXtoMEM->SetDestination(dest1);
