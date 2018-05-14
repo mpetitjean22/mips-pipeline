@@ -24,13 +24,13 @@ void IF_setPCWrite(bool pcWriteVal){
 
 int runInstructionFetch(){
     // ID telling us to branch
-    if (pleaseBranch) {
+    if (pcWrite) {
+        if (pleaseBranch) {
         PC = branchAddress;
         pleaseBranch = false;
-    } else if (pcWrite) {
-        PC += 4;
-        // ikik stalls but lemme test everything else for now
-        IF_setPCWrite(false);
+        } else {
+            PC += 4;
+        }
     }
 
     /* grab + write the instruction address*/
@@ -46,6 +46,6 @@ int runInstructionFetch(){
 
     /* passing along PC+4 to the decode stage of the next cycle so that
         we can accurately predit the branch prediction */
-    IFtoID->SetPC(PC+4);
+    IFtoID->SetPC(PC+4);    
     return ret;
 }
