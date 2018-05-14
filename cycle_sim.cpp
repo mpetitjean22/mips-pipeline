@@ -12,7 +12,7 @@ Cache *ICache;
 Cache *DCache;
 RegisterInfo reginfo;
 
-enum {HALT_INSTR = 0xfeedfeed}
+enum {HALT_INSTR = 0xfeedfeed, IF=0, ID=1, EX=2, Mem=3, WB=4};
 static int cycleNum = 0;
 static uint32_t stageInstruction[5] = {0,0,0,0,0};
 static bool stalled;
@@ -132,6 +132,9 @@ int runCycles(uint32_t cycles)
             stalled = true;
         }
 
+        if (stageInstruction[WB] == HALT_INSTR) {
+
+        }
 
         // need to check for halt instruction in WB and return 1 if it occurs
         cycleNum++;
