@@ -82,6 +82,9 @@ void IDtoExRegister::SetMemSize(enum MemEntrySize size)
 {
     tempMemSize = size;
 }
+void IDtoExRegister::SetOverflow(bool OverflowVal){
+    tempOverflow = OverflowVal;
+}
 
 /* ------------------------------------------------------------------ */
 
@@ -162,6 +165,10 @@ enum MemEntrySize IDtoExRegister::GetMemSize() const
 {
     return memSize;
 }
+bool IDtoExRegister::GetOverflow(){
+    return Overflow;
+}
+
 
 /* ------------------------------------------------------------------ */
 
@@ -185,6 +192,7 @@ void IDtoExRegister::CommitValues()
     RS = tempRS;
     Instruction = tempInstruction;
     memSize = tempMemSize;
+    Overflow = tempOverflow; 
 }
 
 /* ------------------------------------------------------------------ */

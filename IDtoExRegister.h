@@ -20,6 +20,7 @@ public:
     void SetMemWrite(bool MemWriteVal);
     void SetRegWrite(bool RegWriteVal);
     void SetMemToReg(bool MemToRegVal);
+    void SetOverflow(bool OverflowVal);
 
     void SetPC(uint32_t PCVal);
     void SetReadData1(uint32_t ReadData1Val);
@@ -41,6 +42,7 @@ public:
     bool GetMemWrite() const;
     bool GetRegWrite() const;
     bool GetMemToReg() const;
+    bool GetOverflow() const;
     uint32_t GetPC() const;
     uint32_t GetReadData1() const;
     uint32_t GetReadData2() const;
@@ -64,6 +66,7 @@ private:
     bool MemWrite;
     bool RegWrite;
     bool MemToReg;
+    bool Overflow;
     uint32_t PC;
     uint32_t ReadData1;
     uint32_t ReadData2;
@@ -84,6 +87,7 @@ private:
     bool tempMemWrite;
     bool tempRegWrite;
     bool tempMemToReg;
+    bool tempOverflow; 
     uint32_t tempPC;
     uint32_t tempReadData1;
     uint32_t tempReadData2;
