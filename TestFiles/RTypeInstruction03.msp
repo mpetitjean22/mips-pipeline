@@ -1,0 +1,11 @@
+# simple SLT instruction
+slt $t1, $t5, $t6
+
+# simple SLTU instruction
+sltu $t2, $t5, $t6
+
+# shit left
+sll $t3, $t5, $t6
+
+# shift right
+ssrl $t4, $t5, $t6

@@ -59,8 +59,16 @@ static void performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint
             }
             break;
         case SLT:
-            if(source1 < source2){
-                Result = (uint32_t)1;
+            // I'm just handling this overflow as if it were signed
+            if(overflow){
+                if((int32_t)source1 < (int32_t)source2){
+                    Result = (uint32_t)1;
+                }
+            }
+            else{
+                if(source1 < source2){
+                    Result = (uint32_t)1;
+                }
             }
             break;
         case SHIFT_LEFT:
@@ -89,7 +97,7 @@ static uint8_t ALUControl(uint8_t func, bool op1, bool op2, bool op3){
     uint8_t ALUControlInput = 0;
     if(op1==1 && op2 == 0 && op3 == 0){
         switch(func){
-            case FUN_ADD:                       // HANDLE SIGNS!
+            case FUN_ADD:
             case FUN_ADDU:
                 ALUControlInput = ADD;
                 break;
@@ -104,7 +112,7 @@ static uint8_t ALUControl(uint8_t func, bool op1, bool op2, bool op3){
             case FUN_OR:
                 ALUControlInput = OR;
                 break;
-            case FUN_SLT:                       // HANDLE SIGNS!
+            case FUN_SLT:
             case FUN_SLTU:
                 ALUControlInput = SLT;
                 break;
@@ -114,7 +122,7 @@ static uint8_t ALUControl(uint8_t func, bool op1, bool op2, bool op3){
             case FUN_SRL:
                 ALUControlInput = SHIFT_RIGHT;
                 break;
-            case FUN_SUB:                      // HANDLE SIGNS!
+            case FUN_SUB:
             case FUN_SUBU:
                 ALUControlInput = SUBTRACT;
                 break;

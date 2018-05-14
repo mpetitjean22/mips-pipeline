@@ -1,0 +1,8 @@
+# simple AND
+and $t1, $t4, $t5
+
+# simple OR instructions
+or $t2, $t4, $t5
+
+#simple NOR instruction
+NOR $t3, $t4, $t5
