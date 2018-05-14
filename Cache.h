@@ -15,7 +15,7 @@ public:
     ~Cache();
     int Read(uint32_t address, uint32_t & value, MemEntrySize size);
     int Write(uint32_t address, uint32_t value, MemEntrySize size);
-    int StallCycleHasPassed();
+    int StallCyclesHavePassed(int cycles);
     int GetMisses() const;
     int GetHits() const;
     void WriteAllDirtyToMain();
