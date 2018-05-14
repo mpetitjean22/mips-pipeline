@@ -2,6 +2,8 @@
 #include "Cache.h"
 #include "DriverFunctions.h"
 
+// TODO: fix lack of include guard quick fix
+
 IDtoExRegister* IDtoEX;
 MemToWBRegister* MEMtoWB;
 EXtoMemRegister* EXtoMEM;
@@ -10,6 +12,7 @@ Cache *ICache;
 Cache *DCache;
 RegisterInfo reginfo;
 
+enum {HALT_INSTR = 0xfeedfeed}
 static int cycleNum = 0;
 static uint32_t stageInstruction[5] = {0,0,0,0,0};
 static bool stalled;
@@ -97,8 +100,23 @@ int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *m
 
 int runCycles(uint32_t cycles)
 {
-    int icStall, idStall;
+    int icStall, idStall, stalls, cyclesLeft, possibleStalls;
+
+    icStall = ICache->StallCyclesHavePassed(0); // 0 to just get the amount left
+    idStall = DCache->StallCyclesHavePassed(0);
+
     for(uint32_t i = 0; i < cycles; i++) {
+        if (stalled) {
+            stalls = (icStall > idStall) ? icStall : idStall;
+            cyclesLeft = cycles - i;
+            possibleStalls = (stalls < cyclesLeft) ? stalls : cyclesLeft;
+            ICache->StallCyclesHavePassed(possibleStalls);
+            DCache->StallCyclesHavePassed(possibleStalls);
+            i += possibleStalls - 1; // avoid the increment
+            cycleNum += possibleStalls;
+            continue;
+        }
+
         icStall = runInstructionFetch();
         runWriteBack();
         runDecode();
@@ -109,6 +127,11 @@ int runCycles(uint32_t cycles)
         IDtoEX->CommitValues();
         EXtoMEM->CommitValues();
         MEMtoWB->CommitValues();
+
+        if (icStall > 0 || idStall > 0) {
+            stalled = true;
+        }
+
 
         // need to check for halt instruction in WB and return 1 if it occurs
         cycleNum++;
