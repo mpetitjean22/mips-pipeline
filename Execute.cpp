@@ -208,6 +208,9 @@ void runExecute(){
     else{
         performALU(readData1, readData2, ALUControl(funct, ALUop1, ALUop2, ALUop3), shmt, Overflow);
     }
+    if(opcode == OP_JAL){
+        performALU(PC+4, 0, ADD, shmt, Overflow);
+    }
 
 // (3) Write to EX/MEM register
     if(regDst){

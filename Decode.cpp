@@ -196,9 +196,8 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
             MemWrite = 1;
             memSize = WORD_SIZE;
             break;
-        case OP_J:
         case OP_JAL:
-            // implement this!!
+            RegWrite = 1; 
             break;
     //    default:
             // the instruction is not valid
@@ -339,6 +338,18 @@ int runDecode(){
             IF_setPCWrite(true);
         }
     }
+    else if(opcode == OP_J){
+        IF_pleaseBranch((int32_t)(IFtoID->GetPC() + (immediateSE<<2)));
+        IF_setPCWrite(true);
+    }
+    else if(opcode == OP_J){
+        IF_pleaseBranch((int32_t)(IFtoID->GetPC() + (immediateSE<<2)));
+        IF_setPCWrite(true);
+    }
+    else if(opcode == OP_JAL){
+        IF_pleaseBranch((int32_t)(IFtoID->GetPC() + (immediateSE<<2) + 4));
+        IF_setPCWrite(true);
+    }
     else{
         IF_setPCWrite(true);
     }
@@ -346,5 +357,5 @@ int runDecode(){
     // update the instruction position
     IDtoEX->SetInstructionForDump(IFtoID->GetInstruction());
     setInstruction(1,IFtoID->GetInstruction());
-    return 0; 
+    return 0;
 }
