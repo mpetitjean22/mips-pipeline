@@ -216,6 +216,9 @@ void runExecute(){
     if(regDst){
         EXtoMEM->SetDestination(dest2);
     }
+    else if(opcode == OP_JAL){
+        EXtoMEM->SetDetination(31);
+    }
     else{
         EXtoMEM->SetDestination(dest1);
     }
