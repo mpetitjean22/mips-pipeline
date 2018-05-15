@@ -233,7 +233,7 @@ int Cache::Write(uint32_t address, uint32_t value, MemEntrySize size) {
     misses++;
 
     cache_block *toEvict;
-    if (TWO_WAY_SET_ASSOC) {
+    if (type == TWO_WAY_SET_ASSOC) {
         if (lru[index]) {
             toEvict = &way1[index];
             lru[index] = false;
