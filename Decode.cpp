@@ -10,6 +10,18 @@ extern Register_T regs;
 
 static bool execptionJump = false;
 static uint32_t Instruction;
+static bool RegDst     = 0;
+static bool ALUop1     = 0;
+static bool ALUop2     = 0;
+static bool ALUop3     = 0;
+static bool ALUSrc     = 0;
+static bool Branch     = 0;
+static bool MemRead    = 0;
+static bool MemWrite   = 0;
+static bool RegWrite   = 0;
+static bool MemToReg   = 0;
+static bool Overflow   = 0;
+static enum MemEntrySize memSize = WORD_SIZE;
 
 enum OP_IDS
 {
@@ -87,18 +99,7 @@ void redoRegisterRead(){
 }
 
 static void writeControlLines(uint8_t opcode, uint8_t func){
-    bool RegDst     = 0;
-    bool ALUop1     = 0;
-    bool ALUop2     = 0;
-    bool ALUop3     = 0;
-    bool ALUSrc     = 0;
-    bool Branch     = 0;
-    bool MemRead    = 0;
-    bool MemWrite   = 0;
-    bool RegWrite   = 0;
-    bool MemToReg   = 0;
-    bool Overflow   = 0;
-    enum MemEntrySize memSize = WORD_SIZE;
+
 
     /* The Textbook's ALUops were not extensive enough to account for
         all of the instructions in the MIPS implementation. Thus, I have
@@ -227,6 +228,7 @@ int runDecode(){
     uint8_t readRegister2;
     uint8_t dest2;
     uint32_t immediateSE;
+    uint8_t sureDest;
 
     //(1) Get the values we need from instruction
     Instruction     = IFtoID->GetInstruction();
@@ -234,8 +236,15 @@ int runDecode(){
     readRegister1   = getReadRegister1(Instruction);               // 21 - 25 (RS)
     readRegister2   = getReadRegister2(Instruction);               // 16 - 20 (RT)
     dest2           = getDest2(Instruction);                       // 11 - 15 (RD)
-    immediateSE     = somethingToSignExtend(
-                        getImmediate(Instruction));                  // 0 - 15 --> 32 sign extended
+    immediateSE     = somethingToSignExtend(getImmediate(Instruction)); // 0 - 15 --> 32 sign extended
+
+    if(regDst){
+        sureDest = dest2;
+    }
+    else{
+        sureDest = readRegister2;
+    }
+
 
 
     //(2) Write the values to ID/EX
@@ -262,12 +271,12 @@ int runDecode(){
     bool MEMtoIDforward2 = false;
 
 
+
         // do we need to stall? EX --> ID (after 1 stall)
         if(EXtoMEM->GetRegWrite() &&
             readRegister1 != 0 &&
             EXtoMEM->GetDestination() == readRegister1){
-                EXtoIDforward1 = true;
-                // after stalled:
+                MEMtoIDforward1 = true;
                 src1 = EXtoMEM->GetALUResult();
         }
         // load use MEM --> ID (after 2 stalls)
@@ -275,7 +284,6 @@ int runDecode(){
                 readRegister1!= 0 &&
                 MEMtoWB->GetDestination() == readRegister1){
                 MEMtoIDforward1 = true;
-                // after stalled:
                 if(MEMtoWB->GetMemToReg() == 1){
                     src1 = MEMtoWB->GetMemoryOutput();
                 }
@@ -289,14 +297,12 @@ int runDecode(){
             readRegister2 != 0 &&
             EXtoMEM->GetDestination() == readRegister2){
                 EXtoIDforward2 = true;
-                // after the stall we can execute:
                 src2 = EXtoMEM->GetALUResult();
         }
         else if(MEMtoWB->GetRegWrite() &&
                 readRegister2!= 0 &&
                 MEMtoWB->GetDestination() == readRegister2){
                 MEMtoIDforward2 = true;
-                // after stalled:
                 if(MEMtoWB->GetMemToReg() == 1){
                     src2 = MEMtoWB->GetMemoryOutput();
                 }
@@ -373,6 +379,7 @@ int runDecode(){
             IF_setPCWrite(true);
         }
     }
+
     else if(execptionJump){
         IDtoEX->SetRegDst(false);
         IDtoEX->SetALUop1(false);

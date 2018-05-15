@@ -4,7 +4,7 @@
 #define OP_JAL = 0x3
 
 extern IDtoExRegister* IDtoEX;
-extern IFtoIDRegister* IFtoID; 
+extern IFtoIDRegister* IFtoID;
 extern EXtoMemRegister* EXtoMEM;
 extern MemToWBRegister* MEMtoWB;
 enum FUN_IDS
@@ -176,7 +176,7 @@ void runExecute(){
             rs != 0 &&
             MEMtoWB->GetDestination() == rs){
 
-        if(MEMtoWB->GetMemToReg() == 1){
+        if(MEMtoWB->GetMemToReg()){
             readData1 = MEMtoWB->GetMemoryOutput();
         }
         else{
