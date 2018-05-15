@@ -1,8 +1,16 @@
+/* -------------------------------------------------------------------------- */
+/* cycle_sim.cpp                                                              */
+/* Lachlan and Marie                                                          */
+/* Similates the Data path given by the textbook                              */
+/* -------------------------------------------------------------------------- */
+
 #include "sim.h"
-#include "Cache.h"
 #include "DriverFunctions.h"
+#define CACHECONFIG_H
+#include "Cache.h"
 
 // TODO: fix lack of include guard quick fix
+
 
 IDtoExRegister* IDtoEX;
 MemToWBRegister* MEMtoWB;
@@ -16,7 +24,6 @@ enum {HALT_INSTR = 0xfeedfeed, IF=0, ID=1, EX=2, Mem=3, WB=4};
 static int cycleNum = 0;
 static uint32_t stageInstruction[5] = {0,0,0,0,0};
 Register_T regs;
-
 
 // helps us keep track of which PC (instruction) is in
 // each stage
@@ -33,6 +40,7 @@ static void makePipeState(PipeState *state) {
     state->memInstr = stageInstruction[3];
     state->wbInstr = stageInstruction[4];
 }
+
 int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *mainMem)
 {
     ICache = new Cache(icConfig, mainMem);

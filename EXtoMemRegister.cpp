@@ -1,17 +1,11 @@
+/* -------------------------------------------------------------------------- */
+/* EXtoMemRegister.cpp                                                        */
+/* Lachlan and Marie                                                          */
+/* Represents the EX/MEM Stage Register in DataPath                           */
+/* -------------------------------------------------------------------------- */
+
 #include "EXtoMemRegister.h"
-/* ExToMem */
-/*
-    (1) RegWrite
-    (2) MemWrite
-    (3) MemRead
-    (4) MemToReg
-    (5) Branch
-    (6) Zero (result on ALU?)
-    (7) Branch Address --> 32
-    (8) ALU result --> 32
-    (9) ReadData2 --> 32
-    (10) Destination --> 5
-*/
+
 EXtoMemRegister::EXtoMemRegister(){
 
 }

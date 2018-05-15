@@ -1,10 +1,18 @@
+/* -------------------------------------------------------------------------- */
+/* EXtoMemRegister.cpp                                                        */
+/* Lachlan and Marie                                                          */
+/* -------------------------------------------------------------------------- */
+
 #include "IDtoExRegister.h"
 
-/* IFtoEx Register */
+/* -------------------------------------------------------------------------- */
 
 IDtoExRegister::IDtoExRegister(){
 
 }
+
+/* -------------------------------------------------------------------------- */
+
 void IDtoExRegister::SetRegDst(bool RegDestVal)
 {
     tempRegDst = RegDestVal;
@@ -160,8 +168,6 @@ enum MemEntrySize IDtoExRegister::GetMemSize() const
 {
     return memSize;
 }
-
-
 
 /* ------------------------------------------------------------------ */
 

@@ -1,7 +1,10 @@
 #ifndef CACHE_H
 #define CACHE_H
 
+#ifndef CACHECONFIG_H
+#define CACHECONFIG_H
 #include "CacheConfig.h"
+#endif
 #ifndef MEMORYSTORE_H
 #define MEMORYSTORE_H
 #include "MemoryStore.h"

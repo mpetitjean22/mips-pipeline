@@ -1,3 +1,9 @@
+/* -------------------------------------------------------------------------- */
+/* Decode.cpp                                                                 */
+/* Lachlan and Marie                                                          */
+/* Similates the Data path given by the textbook                              */
+/* -------------------------------------------------------------------------- */
+
 #include "Decode.h"
 #include "sim.h"
 

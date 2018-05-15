@@ -1,15 +1,16 @@
+/* -------------------------------------------------------------------------- */
+/* MemToWBRegister.h                                                          */
+/* Lachlan and Marie                                                          */
+/* -------------------------------------------------------------------------- */
+
 #include "MemToWBRegister.h"
-/* MemToWB */
-/*
-    (1) MemToReg
-    (2) RegWrite
-    (3) MemoryOutput --> 32
-    (4) Destination --> 5
-    (5) ALUResult --> 32
-*/
+
 MemToWBRegister::MemToWBRegister(){
 
 }
+
+/* -------------------------------------------------------------------------- */
+
 void MemToWBRegister::SetRegWrite(bool RegWriteVal)
 {
     tempRegWrite = RegWriteVal;

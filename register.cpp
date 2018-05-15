@@ -1,12 +1,20 @@
+/* -------------------------------------------------------------------------- */
+/* register.cpp                                                               */
+/* -------------------------------------------------------------------------- */
+
 #include <cstdio>
 #include <cstdlib>
 #include "register.h"
 #include "assert.h"
 
+/* -------------------------------------------------------------------------- */
+
 struct Register {
     uint32_t general[NUM_REGS];
     uint32_t pc;
 };
+
+/* -------------------------------------------------------------------------- */
 
 void generalRegWrite(Register_T regs, int num, uint32_t value)
 {
@@ -14,6 +22,8 @@ void generalRegWrite(Register_T regs, int num, uint32_t value)
     if (num != 0)
         regs->general[num] = value;
 }
+
+/* -------------------------------------------------------------------------- */
 
 uint32_t generalRegRead(Register_T regs, int num)
 {
@@ -23,20 +33,28 @@ uint32_t generalRegRead(Register_T regs, int num)
     return regs->general[num];
 }
 
+/* -------------------------------------------------------------------------- */
+
 void pcRegWrite(Register_T regs, uint32_t npc)
 {
     regs->pc = npc;
 }
+
+/* -------------------------------------------------------------------------- */
 
 void pcIncrementFour(Register_T regs)
 {
     regs->pc += 4;
 }
 
+/* -------------------------------------------------------------------------- */
+
 uint32_t pcRegRead(Register_T regs)
 {
     return regs->pc;
 }
+
+/* -------------------------------------------------------------------------- */
 
 void convertToRegInfo(Register_T regs, RegisterInfo *regInfo)
 {
@@ -68,6 +86,8 @@ void convertToRegInfo(Register_T regs, RegisterInfo *regInfo)
     regInfo->ra = regs->general[31];
 }
 
+/* -------------------------------------------------------------------------- */
+
 Register_T newReg(void)
 {
     Register_T n = (Register_T) calloc(1, sizeof(struct Register));
@@ -77,3 +97,5 @@ Register_T newReg(void)
     }
     return n;
 }
+
+/* -------------------------------------------------------------------------- */
