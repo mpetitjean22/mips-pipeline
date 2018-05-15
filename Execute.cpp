@@ -248,6 +248,7 @@ void runExecute(){
         IF_setPCWrite(true);
         IF_unsetHalted();
         exceptionJump = false;
+        printf("exceptionE\n");
     }
 // (3) Write to EX/MEM register
     EXtoMEM->SetDestination(IDtoEX->GetDestination());

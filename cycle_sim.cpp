@@ -44,7 +44,7 @@ int initSimulator(CacheConfig & icConfig, CacheConfig & dcConfig, MemoryStore *m
     regs = newReg();
     mem = mainMem;
 
-    cycleNum = 0;
+    cycleNum = -1;
     return 0; // unused
 }
 

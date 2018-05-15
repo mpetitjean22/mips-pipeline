@@ -30,6 +30,7 @@ void IF_unsetHalted() {
 int runInstructionFetch(){
     if (IF_halted) {
         IFtoID->SetInstruction(0);
+        setInstruction(0, 0);
         return 0;
     }
 
@@ -41,6 +42,9 @@ int runInstructionFetch(){
         } else {
             PC += 4;
         }
+        printf("bad: %u\n", PC);
+    } else {
+        printf("good %u\n", PC);
     }
 
     /* grab + write the instruction address*/
@@ -57,6 +61,8 @@ int runInstructionFetch(){
     }
 
     IFtoID->SetInstruction(Instruction);
+    if (!pcWrite)
+        printf("instr: %x\n", Instruction);
 
     /* passing along PC+4 to the decode stage of the next cycle so that
         we can accurately predit the branch prediction */

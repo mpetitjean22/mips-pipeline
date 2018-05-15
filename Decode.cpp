@@ -45,7 +45,8 @@ enum OP_IDS
     OP_SW = 0x2b,
     //J-type opcodes...
     OP_J = 0x2,
-    OP_JAL = 0x3
+    OP_JAL = 0x3,
+    OP_HALT = 0x3F
 };
 enum FUN_IDS
 {
@@ -114,6 +115,19 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
         LUI                 1       1       1
     */
 
+    execptionJump = false;
+    RegDst     = 0;
+    ALUop1     = 0;
+    ALUop2     = 0;
+    ALUop3     = 0;
+    ALUSrc     = 0;
+    Branch     = 0;
+    MemRead    = 0;
+    MemWrite   = 0;
+    RegWrite   = 0;
+    MemToReg   = 0;
+    Overflow   = 0;
+    memSize = WORD_SIZE;
     switch(opcode){
         case OP_ZERO:
             if(func == FUN_ADD || func == FUN_SUB){
@@ -206,7 +220,10 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
         case OP_JAL:
             RegWrite = 1;
             break;
+        case OP_HALT:
+            break;
         default:
+            fprintf(stderr, "Invalid instr: %x\n", Instruction);
             execptionJump = true;
             // the instruction is not valid
             // (1) set the PC to 0x8000
@@ -248,10 +265,15 @@ static void stall(){
     IDtoEX->SetRS(0);
     IDtoEX->SetInstructionForDump(0);
 
+    setInstruction(1,IFtoID->GetInstruction());
+
+    printf("help ive stalled and i cant get up\n");
     IF_setPCWrite(false);
 }
 
 int runDecode(){
+    IF_setPCWrite(true);
+
     uint8_t opcode;
     uint8_t readRegister1;
     uint8_t readRegister2;
@@ -300,7 +322,7 @@ int runDecode(){
         return 1;
     }
     if (EXtoMEM->GetRegWrite()) {
-        if (EXtoMEM->GetMemToReg() &&
+        if (EXtoMEM->GetMemToReg() && Branch &&
             ((EXtoMEM->GetDestination() == readRegister1 && readRegister1 != 0) ||
              (EXtoMEM->GetDestination() == readRegister2 && readRegister2 != 0))) {
             stall();
@@ -386,6 +408,7 @@ int runDecode(){
         IF_setPCWrite(true);
         IF_unsetHalted();
         execptionJump = false;
+        printf("exceptionD\n");
     }
     else{
         IF_setPCWrite(true);

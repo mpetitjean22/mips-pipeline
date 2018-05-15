@@ -71,13 +71,15 @@ int main(int argc, char **argv)
     initSimulator(icConfig, dcConfig, mem);
 
     // we did this one
-    runCycles(13);
+    runCycles(10);
+
+
 
     // IMPLEMENT THIS ONE!
-    // runTillHalt();
+    runTillHalt();
 
     // why is this spelt with an s...
-    //finaliseSimulator();
+    finaliseSimulator();
 
     delete mem;
     return 0;
