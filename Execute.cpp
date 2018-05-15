@@ -22,7 +22,7 @@ enum FUN_IDS
     FUN_SUB = 0x22,
     FUN_SUBU = 0x23
 };
-enum CONTROl_VALS
+enum CONTROL_VALS
 {
     AND         = 0,
     OR          = 1,
@@ -31,7 +31,8 @@ enum CONTROl_VALS
     SLT         = 7,
     SHIFT_LEFT  = 8,
     SHIFT_RIGHT = 9,
-    NOR         = 12
+    NOR         = 12,
+    SHIFT_16    = 13
 };
 // from golden sim
 static uint8_t getSign(uint32_t value)
@@ -82,6 +83,9 @@ static int performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint8
             break;
         case NOR:
             Result = (uint32_t)~(source1 | source2);
+            break;
+        case SHIFT_16:
+            Result = (uint32_t)source2 << 16;
             break;
     }
     if(Result == 0){
@@ -144,6 +148,9 @@ static uint8_t ALUControl(uint8_t func, bool op1, bool op2, bool op3){
     }
     else if(op1 == 1 && op2 == 0 && op3 == 1){
         ALUControlInput = SLT;
+    }
+    else if (op1 == 1 && op2 == 1 && op3 == 1) {
+        ALUControlInput = SHIFT_16;
     }
     return ALUControlInput;
 }

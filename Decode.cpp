@@ -111,6 +111,7 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
         (or)                0       1       1
         (and)               0       0       1
         (SLT)               1       0       1
+        LUI                 1       1       1
     */
 
     switch(opcode){
@@ -162,6 +163,11 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
             memSize = WORD_SIZE;
             break;
         case OP_LUI:
+            RegWrite = 1;
+            ALUop1 = 1;
+            ALUop2 = 1;
+            ALUop3 = 1;
+            ALUSrc = 1;
             break;
         case OP_ORI:
             RegWrite    = 1;
@@ -200,8 +206,8 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
         case OP_JAL:
             RegWrite = 1;
             break;
+        default:
             execptionJump = true;
-    //    default:
             // the instruction is not valid
             // (1) set the PC to 0x8000
             // (2) instruction becomes a NOP

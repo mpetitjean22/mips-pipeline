@@ -90,12 +90,6 @@ int runCycles(uint32_t cycles)
     makePipeState(&state);
     dumpPipeState(state);
 
-    // TODO: remove later
-    /*%%%%%%%%%%%%%%%%%*/
-    RegisterInfo reginfo;
-    convertToRegInfo(regs, &reginfo);
-    dumpRegisterState(reginfo);
-    /*%%%%%%%%%%%%%%%%%*/
     return i < cycles - 1;
 }
 

@@ -98,7 +98,6 @@ uint32_t Cache::Encode(uint32_t tag, uint32_t index, uint32_t offset) const {
 void Cache::Evict(cache_block & target, uint32_t index) {
     uint32_t address = Encode(target.tag, index, 0);
     int ret;
-    printf("evict: %d\n", target.dirty);
     if (target.dirty && target.valid) {
         for (int i = 0; i < wordsPerBlock; i++) {
             ret = mem->setMemValue(address + i * 4, target.block[i], WORD_SIZE);
@@ -157,7 +156,6 @@ void Cache::AugmentPortion(uint32_t & current, uint32_t newv, MemEntrySize size)
 int Cache::Read(uint32_t address, uint32_t & value, MemEntrySize size) {
     uint32_t tag, index, offset;
     Decode(address, tag, index, offset);
-    printf("tag: %u\tindex: %u\toffset: %u\n", tag, index, offset);
     cache_block & from1 = way1[index];
     if (from1.valid && from1.tag == tag) {
         hits++;
@@ -208,7 +206,6 @@ int Cache::Read(uint32_t address, uint32_t & value, MemEntrySize size) {
 int Cache::Write(uint32_t address, uint32_t value, MemEntrySize size) {
     uint32_t tag, index, offset;
     Decode(address, tag, index, offset);
-    printf("tag: %u\tindex: %u\toffset: %u\n", tag, index, offset);
     cache_block & from1 = way1[index];
     if (from1.valid && from1.tag == tag) {
         hits++;
