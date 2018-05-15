@@ -60,8 +60,8 @@ int runCycles(uint32_t cycles)
             stalls = (icStall > dcStall) ? icStall : dcStall;
             cyclesLeft = cycles - i;
             possibleStalls = (stalls < cyclesLeft) ? stalls : cyclesLeft;
-            ICache->StallCyclesHavePassed(possibleStalls);
-            DCache->StallCyclesHavePassed(possibleStalls);
+            icStall = ICache->StallCyclesHavePassed(possibleStalls);
+            dcStall = DCache->StallCyclesHavePassed(possibleStalls);
             i += possibleStalls - 1; // avoid the increment
             cycleNum += possibleStalls;
             continue;
@@ -109,8 +109,8 @@ int runTillHalt()
     while (1) {
         if (icStall > 0 || dcStall > 0) {
             stalls = (icStall > dcStall) ? icStall : dcStall;
-            ICache->StallCyclesHavePassed(stalls);
-            DCache->StallCyclesHavePassed(stalls);
+            icStall = ICache->StallCyclesHavePassed(stalls);
+            dcStall = DCache->StallCyclesHavePassed(stalls);
             cycleNum += stalls;
             continue;
         }
