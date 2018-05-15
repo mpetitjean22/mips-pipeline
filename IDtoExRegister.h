@@ -26,8 +26,7 @@ public:
     void SetReadData1(uint32_t ReadData1Val);
     void SetReadData2(uint32_t ReadData2Val);
     void SetImmediateValue(uint32_t ImmediateValueVal);
-    void SetDest1(uint8_t Dest1Val);
-    void SetDest2(uint8_t Dest2Val);
+    void SetDestination(uint8_t DestVal);
     void SetRS(uint8_t RSVal);
     void SetInstructionForDump(uint32_t InstructionVal);
     void SetMemSize(enum MemEntrySize size);
@@ -47,8 +46,7 @@ public:
     uint32_t GetReadData1() const;
     uint32_t GetReadData2() const;
     uint32_t GetImmediateValue() const;
-    uint8_t GetDest1() const;
-    uint8_t GetDest2() const;
+    uint8_t GetDestination() const;
     uint8_t GetRS() const;
     uint32_t GetInstructionForDump() const;
     enum MemEntrySize GetMemSize() const;
@@ -71,8 +69,7 @@ private:
     uint32_t ReadData1;
     uint32_t ReadData2;
     uint32_t ImmediateValue;
-    uint8_t Dest1;
-    uint8_t Dest2;
+    uint8_t Dest;
     uint8_t RS;
     uint32_t Instruction;
     enum MemEntrySize memSize;
@@ -92,8 +89,7 @@ private:
     uint32_t tempReadData1;
     uint32_t tempReadData2;
     uint32_t tempImmediateValue;
-    uint8_t tempDest1;
-    uint8_t tempDest2;
+    uint8_t tempDest;
     uint8_t tempRS;
     uint32_t tempInstruction;
     enum MemEntrySize tempMemSize;

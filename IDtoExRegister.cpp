@@ -61,13 +61,9 @@ void IDtoExRegister::SetImmediateValue(uint32_t ImmediateValueVal)
 {
     tempImmediateValue = ImmediateValueVal;
 }
-void IDtoExRegister::SetDest1(uint8_t Dest1Val)
+void IDtoExRegister::SetDestination(uint8_t DestVal)
 {
-    tempDest1 = Dest1Val;
-}
-void IDtoExRegister::SetDest2(uint8_t Dest2Val)
-{
-    tempDest2 = Dest2Val;
+    tempDest = DestVal;
 }
 void IDtoExRegister::SetRS(uint8_t RSVal)
 {
@@ -144,13 +140,9 @@ uint32_t IDtoExRegister::GetImmediateValue() const
 {
     return ImmediateValue;
 }
-uint8_t IDtoExRegister::GetDest1() const
+uint8_t IDtoExRegister::GetDestination() const
 {
-    return Dest1;
-}
-uint8_t IDtoExRegister::GetDest2() const
-{
-    return Dest2;
+    return Dest;
 }
 uint8_t IDtoExRegister::GetRS() const
 {
@@ -188,8 +180,7 @@ void IDtoExRegister::CommitValues()
     ReadData1 = tempReadData1;
     ReadData2 = tempReadData2;
     ImmediateValue = tempImmediateValue;
-    Dest1 = tempDest1;
-    Dest2 = tempDest2;
+    Dest = tempDest;
     RS = tempRS;
     Instruction = tempInstruction;
     memSize = tempMemSize;

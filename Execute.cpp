@@ -41,7 +41,7 @@ static uint8_t getSign(uint32_t value)
 static int performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint8_t shmt, bool overflow){
     uint32_t Result = 0;
     bool Zero = 0;
-    bool overflowfound;
+    bool overflowfound = false;
     switch(Control){
         case AND:
             Result = (uint32_t)(source1 - source2);
@@ -92,6 +92,7 @@ static int performALU(uint32_t source1, uint32_t source2, uint8_t Control, uint8
     }
     EXtoMEM->SetALUResult(Result);
     EXtoMEM->SetZero(Zero);
+    return 0;
 }
 static uint8_t ALUControl(uint8_t func, bool op1, bool op2, bool op3){
     // R type instruction
@@ -162,42 +163,35 @@ void runExecute(){
     uint8_t shmt    = ((IDtoEX->GetImmediateValue()) << 6) & 0x1F;
     uint8_t funct   = (IDtoEX->GetImmediateValue()) & 0x3F;
     uint8_t rs      = IDtoEX->GetRS();
-    uint8_t dest1   = IDtoEX->GetDest1();
-    uint8_t dest2   = IDtoEX->GetDest2();
+    uint8_t dest   = IDtoEX->GetDestination();
 
 //(1.5) Check for the need for a EX to EX forward
 // check for readdata1
-    if(EXtoMEM->GetRegWrite() &&
+    if (EXtoMEM->GetRegWrite() &&
         rs != 0 &&
         EXtoMEM->GetDestination() == rs){
         readData1 = EXtoMEM->GetALUResult();
-    }
-    else if(MEMtoWB->GetRegWrite() &&
-            rs != 0 &&
-            MEMtoWB->GetDestination() == rs){
-
-        if(MEMtoWB->GetMemToReg()){
+    } else if (MEMtoWB->GetRegWrite() &&
+               rs != 0 &&
+               MEMtoWB->GetDestination() == rs){
+        if (MEMtoWB->GetMemToReg()) {
             readData1 = MEMtoWB->GetMemoryOutput();
-        }
-        else{
+        } else {
             readData1 = MEMtoWB->GetALUResult();
         }
     }
 
 // check for readdata2
     if(EXtoMEM->GetRegWrite() &&
-        dest1 != 0 &&
-        EXtoMEM->GetDestination() == dest1){
+        dest != 0 &&
+        EXtoMEM->GetDestination() == dest){
         readData2 = EXtoMEM->GetALUResult();
-    }
-    else if(MEMtoWB->GetRegWrite() &&
-            dest1 != 0 &&
-            MEMtoWB->GetDestination() == dest1){
-
-        if(MEMtoWB->GetMemToReg() == 1){
+    } else if (MEMtoWB->GetRegWrite() &&
+               dest != 0 &&
+               MEMtoWB->GetDestination() == dest){
+        if (MEMtoWB->GetMemToReg() == 1) {
             readData2 = MEMtoWB->GetMemoryOutput();
-        }
-        else{
+        } else {
             readData2 = MEMtoWB->GetALUResult();
         }
     }
@@ -236,8 +230,7 @@ void runExecute(){
         IDtoEX->SetReadData1(0);
         IDtoEX->SetReadData2(0);
         IDtoEX->SetImmediateValue(0);
-        IDtoEX->SetDest1(0);
-        IDtoEX->SetDest2(0);
+        IDtoEX->SetDestination(0);
         IDtoEX->SetRS(0);
         IDtoEX->SetInstructionForDump(0);
 
@@ -250,13 +243,7 @@ void runExecute(){
         exceptionJump = false;
     }
 // (3) Write to EX/MEM register
-    if(regDst){
-        EXtoMEM->SetDestination(dest2);
-    }
-    else{
-        EXtoMEM->SetDestination(dest1);
-    }
-
+    EXtoMEM->SetDestination(IDtoEX->GetDestination());
     EXtoMEM->SetRegWrite(IDtoEX->GetRegWrite());
     EXtoMEM->SetMemRead(IDtoEX->GetMemRead());
     EXtoMEM->SetMemWrite(IDtoEX->GetMemWrite());

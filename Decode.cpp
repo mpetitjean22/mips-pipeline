@@ -222,6 +222,29 @@ static void writeControlLines(uint8_t opcode, uint8_t func){
     IDtoEX->SetOverflow(Overflow);
 }
 
+static void stall(){
+    IDtoEX->SetRegDst(false);
+    IDtoEX->SetALUop1(false);
+    IDtoEX->SetALUop2(false);
+    IDtoEX->SetALUop3(false);
+    IDtoEX->SetALUSrc(false);
+    IDtoEX->SetBranch(false);
+    IDtoEX->SetMemRead(false);
+    IDtoEX->SetMemWrite(false);
+    IDtoEX->SetRegWrite(false);
+    IDtoEX->SetMemToReg(false);
+    IDtoEX->SetOverflow(false);
+    IDtoEX->SetPC(0);
+    IDtoEX->SetReadData1(0);
+    IDtoEX->SetReadData2(0);
+    IDtoEX->SetImmediateValue(0);
+    IDtoEX->SetDestination(0);
+    IDtoEX->SetRS(0);
+    IDtoEX->SetInstructionForDump(0);
+
+    IF_setPCWrite(false);
+}
+
 int runDecode(){
     uint8_t opcode;
     uint8_t readRegister1;
@@ -238,7 +261,7 @@ int runDecode(){
     dest2           = getDest2(Instruction);                       // 11 - 15 (RD)
     immediateSE     = somethingToSignExtend(getImmediate(Instruction)); // 0 - 15 --> 32 sign extended
 
-    if(regDst){
+    if(RegDst){
         sureDest = dest2;
     }
     else{
@@ -252,8 +275,7 @@ int runDecode(){
     IDtoEX->SetReadData1(generalRegRead(regs, (int)readRegister1));
     IDtoEX->SetReadData2(generalRegRead(regs, (int)readRegister2));
     IDtoEX->SetImmediateValue(immediateSE);
-    IDtoEX->SetDest1(readRegister2);
-    IDtoEX->SetDest2(dest2);
+    IDtoEX->SetDestination(sureDest);
     IDtoEX->SetRS(readRegister1);
 
     // (3) Write the control Flags
@@ -265,83 +287,34 @@ int runDecode(){
     uint32_t src1 = generalRegRead(regs, (int)readRegister1);
     uint32_t src2 = generalRegRead(regs, (int)readRegister2);
 
-    bool EXtoIDforward1 = false;
-    bool EXtoIDforward2 = false;
-    bool MEMtoIDforward1 = false;
-    bool MEMtoIDforward2 = false;
-
-
-
-        // do we need to stall? EX --> ID (after 1 stall)
-        if(EXtoMEM->GetRegWrite() &&
-            readRegister1 != 0 &&
-            EXtoMEM->GetDestination() == readRegister1){
-                MEMtoIDforward1 = true;
-                src1 = EXtoMEM->GetALUResult();
-        }
-        // load use MEM --> ID (after 2 stalls)
-        else if(MEMtoWB->GetRegWrite() &&
-                readRegister1!= 0 &&
-                MEMtoWB->GetDestination() == readRegister1){
-                MEMtoIDforward1 = true;
-                if(MEMtoWB->GetMemToReg() == 1){
-                    src1 = MEMtoWB->GetMemoryOutput();
-                }
-                else{
-                    src1 = MEMtoWB->GetALUResult();
-                }
-
-        }
-
-        if (EXtoMEM->GetRegWrite() &&
-            readRegister2 != 0 &&
-            EXtoMEM->GetDestination() == readRegister2){
-                EXtoIDforward2 = true;
-                src2 = EXtoMEM->GetALUResult();
-        }
-        else if(MEMtoWB->GetRegWrite() &&
-                readRegister2!= 0 &&
-                MEMtoWB->GetDestination() == readRegister2){
-                MEMtoIDforward2 = true;
-                if(MEMtoWB->GetMemToReg() == 1){
-                    src2 = MEMtoWB->GetMemoryOutput();
-                }
-                else{
-                    src2 = MEMtoWB->GetALUResult();
-                }
-        }
-
-        if((MEMtoIDforward2 && EXtoIDforward1) ||
-            (MEMtoIDforward1 && EXtoIDforward2) ||
-            (EXtoIDforward1 || EXtoIDforward2)){
-
-            IDtoEX->SetRegDst(false);
-            IDtoEX->SetALUop1(false);
-            IDtoEX->SetALUop2(false);
-            IDtoEX->SetALUop3(false);
-            IDtoEX->SetALUSrc(false);
-            IDtoEX->SetBranch(false);
-            IDtoEX->SetMemRead(false);
-            IDtoEX->SetMemWrite(false);
-            IDtoEX->SetRegWrite(false);
-            IDtoEX->SetMemToReg(false);
-            IDtoEX->SetOverflow(false);
-            IDtoEX->SetPC(0);
-            IDtoEX->SetReadData1(0);
-            IDtoEX->SetReadData2(0);
-            IDtoEX->SetImmediateValue(0);
-            IDtoEX->SetDest1(0);
-            IDtoEX->SetDest2(0);
-            IDtoEX->SetRS(0);
-            IDtoEX->SetInstructionForDump(0);
-
-            IF_setPCWrite(false);
-
+    if (IDtoEX->GetRegWrite() &&
+        ((IDtoEX->GetDestination() == readRegister1 && readRegister1 != 0) ||
+         (IDtoEX->GetDestination() == readRegister2 && readRegister2 != 0))) {
+        stall();
+        return 1;
+    }
+    if (EXtoMEM->GetRegWrite()) {
+        if (EXtoMEM->GetMemToReg() &&
+            ((EXtoMEM->GetDestination() == readRegister1 && readRegister1 != 0) ||
+             (EXtoMEM->GetDestination() == readRegister2 && readRegister2 != 0))) {
+            stall();
             return 1;
         }
-        else if(MEMtoIDforward1 || MEMtoIDforward2){
-            // stall twice
+        if (EXtoMEM->GetDestination() == readRegister1 && readRegister1 != 0) {
+            src1 = EXtoMEM->GetALUResult();
         }
+        if (EXtoMEM->GetDestination() == readRegister2 && readRegister2 != 0) {
+            src2 = EXtoMEM->GetALUResult();
+        }
+    }
+    if (MEMtoWB->GetRegWrite()) {
+        if (MEMtoWB->GetDestination() == readRegister1 && readRegister1 != 0) {
+            src1 = MEMtoWB->GetMemToReg() ? MEMtoWB->GetMemoryOutput() : MEMtoWB->GetALUResult();
+        }
+        if (MEMtoWB->GetDestination() == readRegister2 && readRegister2 != 0) {
+            src2 = MEMtoWB->GetMemToReg() ? MEMtoWB->GetMemoryOutput() : MEMtoWB->GetALUResult();
+        }
+    }
 
     if(opcode == OP_BEQ){
         if(src1 == src2){
@@ -371,7 +344,7 @@ int runDecode(){
         IDtoEX->SetALUop1(0);
         IDtoEX->SetALUop2(0);
         IDtoEX->SetALUop3(0);
-        IDtoEX->SetDest1(31);
+        IDtoEX->SetDestination(31);
     }
     else if(opcode == OP_ZERO){
         if((immediateSE & 0x3F) == FUN_JR){
@@ -396,8 +369,7 @@ int runDecode(){
         IDtoEX->SetReadData1(0);
         IDtoEX->SetReadData2(0);
         IDtoEX->SetImmediateValue(0);
-        IDtoEX->SetDest1(0);
-        IDtoEX->SetDest2(0);
+        IDtoEX->SetDestination(0);
         IDtoEX->SetRS(0);
         IDtoEX->SetInstructionForDump(0);
 
