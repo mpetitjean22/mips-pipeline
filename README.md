@@ -1,3 +1,3 @@
-# nips-pipeline
+# mips-pipeline
 
-simulates nips with accurate cycle count. very important. ik. 
+simulates mips with accurate cycle count.
